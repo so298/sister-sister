@@ -1,7 +1,8 @@
 import { MantineProvider } from '@mantine/core';
 import { FC } from 'react';
-import { lightTheme } from './styles/theme';
+
 import { SwitchPage } from './pages';
+import { lightTheme } from './styles/theme';
 
 const App: FC = () => {
   return (

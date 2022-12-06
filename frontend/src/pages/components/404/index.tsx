@@ -1,5 +1,5 @@
-import { FC } from 'react';
 import { Text } from '@mantine/core';
+import { FC } from 'react';
 
 export const NotFound: FC = () => {
   return (
