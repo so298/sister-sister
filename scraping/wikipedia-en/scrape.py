@@ -81,16 +81,16 @@ def read_child_page(url: str):
 
 # print(json.dumps(read_child_page(children_urls[0])))
 
-all_info = []
+# all_info = []
 for child_url in children_urls:
     print(child_url, file=sys.stderr)
-    all_info.append({
-        "page_url": child_url,
-        "content": read_child_page(child_url)
-    })
     time.sleep(0.1)
 
     url_path = pathlib.Path(child_url)
     with open(f"cache/{url_path.name}.json", "w") as f:
-        print(f"\033[32m save to {f'cache/{url_path.name}.json'}\033[0m", file=sys.stderr)
-        json.dump(all_info, f)
+        print(
+            f"\033[32m save to {f'cache/{url_path.name}.json'}\033[0m", file=sys.stderr)
+        json.dump({
+            "page_url": child_url,
+            "content": read_child_page(child_url)
+        }, f)
