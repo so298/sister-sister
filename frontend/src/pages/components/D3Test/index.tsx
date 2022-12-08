@@ -10,13 +10,20 @@ const D3Test: FC = () => {
     setIsLoaded((prev) => !prev);
   };
   const Svg = useRef<SVGSVGElement>(null);
-  const G = useRef<d3.Selection<SVGGElement, any, any, any>>(null);
+  const G = useRef<SVGGElement>(null);
   useEffect(() => {
     let svg: d3.Selection<SVGSVGElement, any, any, any>;
-    if (Svg.current !== null && Svg.current !== undefined) {
+    let g: any;
+    if (
+      Svg.current !== null &&
+      Svg.current !== undefined &&
+      G.current !== null &&
+      G.current !== undefined
+    ) {
       //console.log(Svg.current);
       // refer https://zenn.dev/fuuki/scraps/41d311695d0c23
       svg = d3.select<SVGSVGElement, any>(Svg.current);
+      g = d3.select<SVGGElement, any>(G.current);
       d3.json('japan.topojson').then((data: any) => {
         const japan: any = topojson.feature(data, data.objects.japan);
 
@@ -42,8 +49,7 @@ const D3Test: FC = () => {
           .attr('height', height)
           .attr('viewBox', [0, 0, width, height])
           .on('click', reset);
-        let g: any = G;
-        g = svg.append('g');
+
         const states = g
           .attr('fill', '#444')
           .attr('cursor', 'pointer')
@@ -144,7 +150,9 @@ const D3Test: FC = () => {
     <>
       <Text>D3Test</Text>
       <button onClick={handleIsLoaded}>a</button>
-      <svg ref={Svg} />
+      <svg ref={Svg}>
+        <g ref={G} />
+      </svg>
     </>
   );
 };
