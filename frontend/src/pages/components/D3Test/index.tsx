@@ -3,16 +3,6 @@ import * as d3 from 'd3';
 import React, { useRef, FC, useEffect, useState } from 'react';
 import * as topojson from 'topojson';
 
-import input from './data/japan.json';
-
-export interface InputCsvType {
-  Prefecture: string;
-  Population: number;
-  FoodProduction: number;
-  ClothingProduction: number;
-  FurnitureProduction: number;
-}
-
 //const svg = useRef<SVGSVGElement>;
 const D3Test: FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
