@@ -10,6 +10,7 @@ const D3Test: FC = () => {
     setIsLoaded((prev) => !prev);
   };
   const Svg = useRef<SVGSVGElement>(null);
+  const G = useRef<d3.Selection<SVGGElement, any, any, any>>(null);
   useEffect(() => {
     let svg: d3.Selection<SVGSVGElement, any, any, any>;
     if (Svg.current !== null && Svg.current !== undefined) {
@@ -41,8 +42,8 @@ const D3Test: FC = () => {
           .attr('height', height)
           .attr('viewBox', [0, 0, width, height])
           .on('click', reset);
-
-        const g = svg.append('g');
+        let g: any = G;
+        g = svg.append('g');
         const states = g
           .attr('fill', '#444')
           .attr('cursor', 'pointer')
