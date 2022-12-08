@@ -11,18 +11,6 @@ import pathlib
 def get_full_wikipedia_url(subpath: str):
     return "https://en.wikipedia.org" + subpath
 
-
-root_url = "https://en.wikipedia.org/wiki/Lists_of_twin_towns_and_sister_cities"
-
-root_soup = BeautifulSoup(requests.get(root_url).content, 'html.parser')
-
-children_elems = root_soup.find_all(
-    "a", attrs={"href": re.compile(r"wiki/List_of_[\w()]+$")})
-children_urls = [get_full_wikipedia_url(
-    child_elem.get('href')) for child_elem in children_elems]
-# print(*children_urls, sep="\n")
-
-
 def read_child_page(url: str):
     soup = BeautifulSoup(requests.get(url).content, "html.parser")
     main_content = soup.find(attrs={"class": "mw-parser-output"})
@@ -79,18 +67,29 @@ def read_child_page(url: str):
     return output
 
 
-# print(json.dumps(read_child_page(children_urls[0])))
+if __name__ == "__main__":
+    root_url = "https://en.wikipedia.org/wiki/Lists_of_twin_towns_and_sister_cities"
 
-# all_info = []
-for child_url in children_urls:
-    print(child_url, file=sys.stderr)
-    time.sleep(0.1)
+    root_soup = BeautifulSoup(requests.get(root_url).content, 'html.parser')
 
-    url_path = pathlib.Path(child_url)
-    with open(f"cache/{url_path.name}.json", "w") as f:
-        print(
-            f"\033[32m save to {f'cache/{url_path.name}.json'}\033[0m", file=sys.stderr)
-        json.dump({
-            "page_url": child_url,
-            "content": read_child_page(child_url)
-        }, f)
+    children_elems = root_soup.find_all(
+        "a", attrs={"href": re.compile(r"wiki/List_of_[\w()]+$")})
+    children_urls = [get_full_wikipedia_url(
+        child_elem.get('href')) for child_elem in children_elems]
+    # print(*children_urls, sep="\n")
+
+    # print(json.dumps(read_child_page(children_urls[0])))
+
+    # all_info = []
+    for child_url in children_urls:
+        print(child_url, file=sys.stderr)
+        time.sleep(0.1)
+
+        url_path = pathlib.Path(child_url)
+        with open(f"cache/{url_path.name}.json", "w") as f:
+            print(
+                f"\033[32m save to {f'cache/{url_path.name}.json'}\033[0m", file=sys.stderr)
+            json.dump({
+                "page_url": child_url,
+                "content": read_child_page(child_url)
+            }, f)
