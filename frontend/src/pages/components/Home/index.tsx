@@ -1,6 +1,12 @@
-import { Text } from '@mantine/core';
 import { FC } from 'react';
 
+import DrawerSection from './DrawerSection';
+
 export const Home: FC = () => {
-  return <Text>HOME</Text>;
+  // const [opened, setOpened] = useState<boolean>(false);
+  return (
+    <>
+      <DrawerSection />
+    </>
+  );
 };
