@@ -1,7 +1,7 @@
 import { Text } from '@mantine/core';
 import * as d3 from 'd3';
 import { Feature } from 'geojson';
-import React, { useRef, FC, useEffect } from 'react';
+import React, { useRef, FC, useEffect, useState } from 'react';
 import * as topojson from 'topojson';
 import { Topology } from 'topojson-specification';
 
@@ -14,8 +14,13 @@ export interface InputCsvType {
   ClothingProduction: number;
   FurnitureProduction: number;
 }
+
 //const svg = useRef<SVGSVGElement>;
 const D3Test: FC = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const handleIsLoaded = () => {
+    setIsLoaded((prev) => !prev);
+  };
   const Svg = useRef<SVGSVGElement>(null);
   useEffect(() => {
     let svg: d3.Selection<SVGSVGElement, any, any, any>;
@@ -149,6 +154,7 @@ const D3Test: FC = () => {
   return (
     <>
       <Text>D3Test</Text>
+      <button onClick={handleIsLoaded}>a</button>
       <svg ref={Svg} />
     </>
   );
