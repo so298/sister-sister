@@ -51,7 +51,6 @@
     "unused-imports/no-unused-imports-ts": "warn",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "import/no-unresolved": "off"
+    "@typescript-eslint/no-empty-function": "off"
   }
 }

@@ -1,9 +1,7 @@
 import { Text } from '@mantine/core';
 import * as d3 from 'd3';
-import { Feature } from 'geojson';
 import React, { useRef, FC, useEffect, useState } from 'react';
 import * as topojson from 'topojson';
-import { Topology } from 'topojson-specification';
 
 import input from './data/japan.json';
 
