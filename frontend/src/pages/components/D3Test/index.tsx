@@ -1,14 +1,7 @@
 import { Text } from '@mantine/core';
 import * as d3 from 'd3';
 import { Feature } from 'geojson';
-import React, {
-  useRef,
-  FC,
-  RefObject,
-  Component,
-  useState,
-  useEffect,
-} from 'react';
+import React, { useRef, FC, useEffect } from 'react';
 import * as topojson from 'topojson';
 import { Topology } from 'topojson-specification';
 
@@ -23,88 +16,140 @@ export interface InputCsvType {
 }
 //const svg = useRef<SVGSVGElement>;
 const D3Test: FC = () => {
-  //const draw = (svg: d3.Selection<SVGSVGElement, Feature[], null, undefined>) => {
-  const width = 800;
-  const height = 800;
-  //console.log(input);
-  //const populationHash = new Map<string, number>();
-  const [svg, setSvg] = useState(
-    d3
-      .select('body')
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height)
-      .attr('y', 40),
-  );
-  const [loading, setLoading] = useState(true);
-
-  //const color = d3.scaleLinear().domain([500, 14000]).range([255, 0]);
-
-  // d3.csv<InputCsvType>(".data/Japan2015Data.csv").then(function (data) {
-  //   data.forEach<InputCsvType>(function (d:InputCsvType) {
-
-  //     if (d != undefined && d != null){
-  //       populationHash.set(d.Prefecture,d.Population)
-  //     };
-  //   });
-  //   showMap();
-  // });
-  // showMap();
-  // function showMap() {
+  const Svg = useRef<SVGSVGElement>(null);
   useEffect(() => {
-    d3.json<Topology>('.data/japan.json').then((data: any) => {
-      if (data == undefined || data == null) {
-        return;
-      }
-      setLoading(false);
-      console.log(data);
-      const japan: any = topojson.feature(data, data.objects.japan);
-      console.log(japan);
-      const projection: d3.GeoProjection = d3
-        .geoMercator()
-        .center([137, 34])
-        .translate([width / 2, height / 2])
-        .scale(1500);
+    let svg: d3.Selection<SVGSVGElement, any, any, any>;
+    if (Svg.current !== null && Svg.current !== undefined) {
+      //console.log(Svg.current);
+      // refer https://zenn.dev/fuuki/scraps/41d311695d0c23
+      svg = d3.select<SVGSVGElement, any>(Svg.current);
+      d3.json('japan.topojson').then((data: any) => {
+        const japan: any = topojson.feature(data, data.objects.japan);
 
-      const path: any = d3.geoPath().projection(projection);
-      console.log(japan);
-      svg
-        .selectAll('path')
-        .data(japan)
-        .enter()
-        .append('path')
-        .attr('d', path)
-        // .attr("fill", function (d) {
-        //   return (
-        //     "rgb(255," +
-        //     Math.floor(color(populationHash[d.properties.nam_ja])) +
-        //     ",   " +
-        //     Math.floor(color(populationHash[d.properties.nam_ja])) +
-        //     ")"
-        //   );
-        // })
-        .attr('stroke', '#333333')
-        .attr('stroke-width', 0.5);
-    });
+        const width = 600;
+        const height = 600;
+        const geoCenter: [number, number] = [137, 34];
+        const geoScale = 1000;
+
+        const zahyou1 = [137.7261111111, 34.7108333333];
+
+        const projection: any = d3
+          .geoMercator()
+          .center(geoCenter)
+          .translate([width / 2, height / 2])
+          .scale(geoScale);
+
+        const path: any = d3.geoPath().projection(projection);
+
+        const zoom: any = d3.zoom().scaleExtent([1, 8]).on('zoom', zoomed);
+
+        svg
+          .attr('width', width)
+          .attr('height', height)
+          .attr('viewBox', [0, 0, width, height])
+          .on('click', reset);
+
+        const g = svg.append('g');
+        const states = g
+          .attr('fill', '#444')
+          .attr('cursor', 'pointer')
+          .selectAll('path')
+          .data(japan.features)
+          .join('path')
+          .on('click', clicked)
+          .attr('d', path);
+
+        states.append('title').text((d: any) => d.properties.name);
+
+        g.append('path')
+          .attr('fill', 'none')
+          .attr('stroke', 'white')
+          .attr('stroke-linejoin', 'round')
+          .attr(
+            'd',
+            path(
+              topojson.mesh(
+                data,
+                data.objects.japan,
+                (a: any, b: any) => a !== b,
+              ),
+            ),
+          );
+
+        states.exit().remove();
+        g.exit().remove();
+
+        const circles = g
+          .append('circle')
+          .attr('fill', '#0088DD')
+          .attr('stroke', 'white')
+          .attr('r', 2)
+          .attr('cx', projection(zahyou1)[0])
+          .attr('cy', projection(zahyou1)[1]);
+        const txt = g
+          .append('text')
+          .text('Hamamatsu')
+          .attr('font-size', 2)
+          .attr('x', projection(zahyou1)[0])
+          .attr('y', projection(zahyou1)[1] + 3);
+
+        svg.call(zoom);
+
+        function reset() {
+          states.transition().style('fill', null);
+          if (svg.node() != null) {
+            const nodes: any = svg.node();
+            svg
+              .transition()
+              .duration(750)
+              .call(
+                zoom.transform,
+                d3.zoomIdentity,
+                d3.zoomTransform(nodes).invert([width / 2, height / 2]),
+              );
+          }
+          states.exit().remove();
+          g.exit().remove();
+        }
+
+        function clicked(event: React.MouseEvent<HTMLInputElement>, d: any) {
+          const [[x0, y0], [x1, y1]] = path.bounds(d);
+          event.stopPropagation();
+          states.transition().style('fill', null);
+          d3.select<any, any>(event.target).transition().style('fill', 'red');
+          svg
+            .transition()
+            .duration(750)
+            .call(
+              zoom.transform,
+              d3.zoomIdentity
+                .translate(width / 2, height / 2)
+                .scale(
+                  Math.min(
+                    8,
+                    0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height),
+                  ),
+                )
+                .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
+              d3.pointer(event, svg.node()),
+            );
+        }
+
+        function zoomed(event: any) {
+          const { transform } = event;
+          g.attr('transform', transform);
+          g.attr('stroke-width', 1 / transform.k);
+        }
+
+        return svg.node();
+      });
+    }
   });
-  //}
-  //};
-
-  //draw(svg);
-
-  //   const svg = d3
-  //     .select('body')
-  //     .append('svg')
-  //     .attr('width', 500)
-  //     .attr('height', 500);
-
-  //   svg.append('text').attr('x', 100).attr('y', 100).text('Hello d3js');
-
-  //   svg.append('circle').attr('r', 30).attr('cx', 60).attr('cy', 50);
 
   return (
     <>
       <Text>D3Test</Text>
+      <svg ref={Svg} />
     </>
   );
 };
