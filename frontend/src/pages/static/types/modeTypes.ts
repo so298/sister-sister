@@ -1,5 +1,5 @@
-const modeType = {
-  Map: 'map',
+export const modeType = {
+  Search: 'search',
   Tour: 'tour',
 } as const;
 

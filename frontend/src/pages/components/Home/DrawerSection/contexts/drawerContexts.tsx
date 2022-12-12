@@ -20,7 +20,7 @@ interface DrawerStateProviderProps {
 export const DrawerStateProvider: FC<DrawerStateProviderProps> = (props) => {
   const { children } = props;
 
-  const [mode, setMode] = useState<ModeType>('map');
+  const [mode, setMode] = useState<ModeType>('search');
   const onModeChange = useCallback((value: ModeType) => {
     setMode(value);
   }, []);

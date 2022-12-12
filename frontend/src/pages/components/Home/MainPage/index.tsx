@@ -10,11 +10,13 @@ import {
 } from '@mantine/core';
 import { useState, FC } from 'react';
 
+import ControlPanelSection from './ControlPanelSection';
+
 const MainPage: FC = () => {
   const theme = useMantineTheme();
   const [contoroloPanelOpened, setContorolPanelOpend] =
     useState<boolean>(false);
-  const [rightCardOpend, setRightCardOpend] = useState<boolean>(true);
+  const [rightCardOpend, setRightCardOpend] = useState<boolean>(false);
   return (
     <AppShell
       styles={{
@@ -26,12 +28,11 @@ const MainPage: FC = () => {
       asideOffsetBreakpoint="sm"
       navbar={
         <Navbar
-          p="md"
           hiddenBreakpoint={theme.breakpoints.xl}
           hidden={!contoroloPanelOpened}
-          width={{ sm: 200, lg: 300 }}
+          // width={{ sm: 300, lg: 300, md: 300 }}
         >
-          <Text>Application navbar</Text>
+          <ControlPanelSection />
         </Navbar>
       }
       aside={
@@ -46,7 +47,7 @@ const MainPage: FC = () => {
       }
       header={
         <Header
-          height={{ base: 50, md: 70 }}
+          height={70}
           p="md"
           style={{ backgroundColor: theme.colors.cyan[4] }}
         >
