@@ -22,10 +22,16 @@ const useStyles = createStyles(() => ({
   chevrons: { margin: '0 auto', alignItems: 'right' },
 }));
 
-const scaleX = {
-  in: { opacity: 1, transform: 'scaleX(1)' },
-  out: { opacity: 0, transform: 'scaleX(0)' },
+const scaleXRightCards = {
+  in: { opacity: 1, transform: 'translateX(0)' },
+  out: { opacity: 0, transform: 'translateX(40%)' },
   common: { transformOrigin: 'right' },
+  transitionProperty: 'transform, opacity',
+};
+const scaleXControlPanel = {
+  in: { opacity: 1, transform: 'translateX(0)' },
+  out: { opacity: 0, transform: 'translateX(-20vw)' },
+  common: { transformOrigin: 'left' },
   transitionProperty: 'transform, opacity',
 };
 
@@ -44,13 +50,24 @@ const MainPage: FC = () => {
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       navbar={
-        <Navbar
-          hiddenBreakpoint={theme.breakpoints.xl}
-          hidden={!controlPanelOpened}
-          // width={{ sm: 300, lg: 300, md: 300 }}
+        <Transition
+          mounted={controlPanelOpened}
+          transition={scaleXControlPanel}
+          duration={500}
+          timingFunction="ease"
         >
-          <ControlPanelSection />
-        </Navbar>
+          {(styles) => (
+            <div style={{ ...styles }}>
+              <Navbar
+                hiddenBreakpoint={theme.breakpoints.xl}
+                hidden={!controlPanelOpened}
+                width={{ sm: 300, lg: 300, md: 300 }}
+              >
+                <ControlPanelSection />
+              </Navbar>
+            </div>
+          )}
+        </Transition>
       }
       aside={
         <Aside
@@ -60,7 +77,7 @@ const MainPage: FC = () => {
         >
           <Transition
             mounted={rightCardOpend}
-            transition={scaleX}
+            transition={scaleXRightCards}
             duration={500}
             timingFunction="ease"
           >
