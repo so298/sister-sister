@@ -1,14 +1,14 @@
 import { FC } from 'react';
 
 import DrawerSection from './DrawerSection';
-import RightCardSection from './RightCardsSection';
+import HeaderSection from './HeaderSection';
 
 export const Home: FC = () => {
   // const [opened, setOpened] = useState<boolean>(false);
   return (
     <>
+      <HeaderSection />
       <DrawerSection />
-      <RightCardSection />
     </>
   );
 };
