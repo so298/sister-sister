@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { useState, FC } from 'react';
 
-const HeaderSection: FC = () => {
+const MainPage: FC = () => {
   const theme = useMantineTheme();
   const [contoroloPanelOpened, setContorolPanelOpend] =
     useState<boolean>(false);
@@ -89,4 +89,4 @@ const HeaderSection: FC = () => {
   );
 };
 
-export default HeaderSection;
+export default MainPage;
