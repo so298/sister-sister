@@ -17,7 +17,7 @@ const useStyles = createStyles((theme) => ({
 
 const ControlPanelSection: FC = () => {
   const { classes } = useStyles();
-  const [mode, setMode] = useState<ModeType>('search');
+  const [, setMode] = useState<ModeType>('search');
   //   const data =
   return (
     <div className={classes.root}>

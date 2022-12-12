@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Text } from '@mantine/core';
 import * as d3 from 'd3';
 import React, { useRef, FC, useEffect, useState } from 'react';
@@ -5,7 +7,7 @@ import * as topojson from 'topojson';
 
 //const svg = useRef<SVGSVGElement>;
 const D3Test: FC = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [, setIsLoaded] = useState(false);
   const handleIsLoaded = () => {
     setIsLoaded((prev) => !prev);
   };
