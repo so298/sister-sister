@@ -3,25 +3,8 @@ import { FC } from 'react';
 
 import RightCard, { RightCardProps } from './elements/RightCard';
 
-const useStyles = createStyles((theme) => ({
-  root: { padding: 'md', width: '30%' },
-  item: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    borderRadius: theme.radius.md,
-    height: 90,
-    backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-    transition: 'box-shadow 150ms ease, transform 100ms ease',
-
-    '&:hover': {
-      boxShadow: `${theme.shadows.md} !important`,
-      transform: 'scale(1.05)',
-    },
-  },
+const useStyles = createStyles(() => ({
+  root: { padding: 'md', width: '100%', overflow: 'scroll' },
 }));
 
 const RightCardSection: FC = () => {
@@ -59,7 +42,14 @@ const RightCardSection: FC = () => {
     },
   ];
   return (
-    <Flex gap="md" direction="column" p="md" className={classes.root}>
+    <Flex
+      direction="column"
+      justify="start"
+      align="center"
+      gap="md"
+      p="md"
+      className={classes.root}
+    >
       {cardItems.map((cardItem, i) => (
         <RightCard {...cardItem} key={i} />
       ))}
