@@ -16,7 +16,19 @@
     "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Iran",
     "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Iraq",
     "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Israel",
-    "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Japan"
+    "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Japan",
+    "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Jordan",
+    "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Malaysia",
+    "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_the_State_of_Palestine",
+    "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Russia",
+    "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_South_Korea",
+    "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Taiwan",
+    "https://en.wikipedia.org/wiki/List_of_sister_cities_in_Thailand"
   ],
-  "type_b": {}
+  "type_b": [
+    "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Asia"
+  ],
+  "type_c": [
+    "https://en.wikipedia.org/wiki/List_of_sister_cities_in_the_Philippines"
+  ]
 }

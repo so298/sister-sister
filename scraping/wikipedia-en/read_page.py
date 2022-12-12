@@ -12,7 +12,7 @@ def get_full_wikipedia_url(subpath: str):
 
 def read_page_a(url: str):
     soup = BeautifulSoup(requests.get(url).content, "html.parser")
-    main_content = soup.find(attrs={"class": "mw-parser-output"})
+    main_content = soup.find(attrs={"id": "mw-content-text"}).div
     city_name = None
     city_url = None
     output = []
@@ -47,6 +47,7 @@ def read_page_a(url: str):
             city_name = link.text
             city_url = get_full_wikipedia_url(link.get('href'))
             print(city_name, city_url, file=sys.stderr)
+
         elif ul != None:
             output.append({
                 "city_name": city_name,
