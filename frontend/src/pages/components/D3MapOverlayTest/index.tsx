@@ -2,13 +2,7 @@ import { Text, Box } from '@mantine/core';
 import * as d3 from 'd3';
 import { LatLngTuple } from 'leaflet';
 import { FC, useEffect, useRef } from 'react';
-import {
-  MapContainer,
-  TileLayer,
-  Popup,
-  Marker,
-  Pane,
-} from 'react-leaflet';
+import { MapContainer, TileLayer, Popup, Marker, Pane } from 'react-leaflet';
 
 export const D3MapOverlayTest: FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
