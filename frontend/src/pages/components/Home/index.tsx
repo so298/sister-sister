@@ -1,14 +1,12 @@
 import { FC } from 'react';
 
-import DrawerSection from './DrawerSection';
-import HeaderSection from './HeaderSection';
+import MainPage from './MainPage';
 
 export const Home: FC = () => {
   // const [opened, setOpened] = useState<boolean>(false);
   return (
     <>
-      <HeaderSection />
-      <DrawerSection />
+      <MainPage />
     </>
   );
 };
