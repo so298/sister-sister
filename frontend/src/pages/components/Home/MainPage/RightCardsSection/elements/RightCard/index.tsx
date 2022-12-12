@@ -3,14 +3,18 @@ import { FC } from 'react';
 
 const useStyles = createStyles((theme) => ({
   item: {
-    backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
     transition: 'box-shadow 150ms ease, transform 100ms ease',
+    width: '100%',
+    borderRadius: 'md',
 
     '&:hover': {
       boxShadow: `${theme.shadows.md} !important`,
       transform: 'scale(1.05)',
     },
+  },
+  wrapper: {
+    overflow: 'visible',
+    width: '100%',
   },
 }));
 
@@ -25,17 +29,20 @@ const RightCard: FC<RightCardProps> = (props) => {
   const { classes } = useStyles();
   const { imgSrc, alt, cityName, description } = props;
   return (
-    <Card className={classes.item} shadow="sm" p="md" radius="md" withBorder>
-      <Card.Section>
-        <Image src={imgSrc} height={160} alt={alt} />
-      </Card.Section>
-      <Text pt="xs" pb="xs" weight={500}>
-        {cityName}
-      </Text>
-      <Text size="sm" color="dimmed">
-        {description}
-      </Text>
-    </Card>
+    <div className={classes.wrapper}>
+      <Card className={classes.item} shadow="sm" radius="md" withBorder>
+        <Card.Section>
+          <Image src={imgSrc} height={160} alt={alt} />
+        </Card.Section>
+        <Text pt="xs" pb="xs" weight={500}>
+          {cityName}
+        </Text>
+
+        <Text size="sm" color="dimmed">
+          {description}
+        </Text>
+      </Card>
+    </div>
   );
 };
 
