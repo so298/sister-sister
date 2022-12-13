@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as d3 from 'd3';
 import React, { useRef, FC, useEffect } from 'react';
 import * as topojson from 'topojson';
@@ -14,8 +15,8 @@ const JapanPrefecture: FC = () => {
       G.current !== null &&
       G.current !== undefined
     ) {
-      svg = d3.select<SVGSVGElement, any>(Svg.current);
-      g = d3.select<SVGGElement, any>(G.current);
+      svg = d3.select(Svg.current);
+      g = d3.select(G.current);
       d3.json('japan.topojson').then((data: any) => {
         const japan: any = topojson.feature(data, data.objects.japan);
 
@@ -71,15 +72,15 @@ const JapanPrefecture: FC = () => {
         states.exit().remove();
         g.exit().remove();
 
-        const circles = g
-          .append('circle')
+        // circle
+        g.append('circle')
           .attr('fill', '#0088DD')
           .attr('stroke', 'white')
           .attr('r', 2)
           .attr('cx', projection(zahyou1)[0])
           .attr('cy', projection(zahyou1)[1]);
-        const txt = g
-          .append('text')
+        // text
+        g.append('text')
           .text('Hamamatsu')
           .attr('font-size', 2)
           .attr('x', projection(zahyou1)[0])
