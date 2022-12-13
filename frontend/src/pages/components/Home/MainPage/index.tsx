@@ -20,6 +20,7 @@ import RightCardSection from './RightCardsSection';
 const useStyles = createStyles(() => ({
   root: { padding: 'md', width: '100%', overflow: 'scroll' },
   chevrons: { margin: '0 auto', alignItems: 'right' },
+  aside: { overflow: 'scroll' },
 }));
 
 const scaleXRightCards = {
@@ -71,6 +72,7 @@ const MainPage: FC = () => {
       }
       aside={
         <Aside
+          className={classes.aside}
           hiddenBreakpoint={theme.breakpoints.xl}
           hidden={!rightCardOpend}
           width={{ sm: 300, lg: 400 }}

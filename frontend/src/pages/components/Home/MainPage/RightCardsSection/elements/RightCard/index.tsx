@@ -5,7 +5,6 @@ const useStyles = createStyles((theme) => ({
   item: {
     transition: 'box-shadow 150ms ease, transform 100ms ease',
     width: '100%',
-    borderRadius: 'md',
 
     '&:hover': {
       boxShadow: `${theme.shadows.md} !important`,
@@ -13,7 +12,7 @@ const useStyles = createStyles((theme) => ({
     },
   },
   wrapper: {
-    overflow: 'visible',
+    //overflow: 'scroll',
     width: '100%',
   },
 }));
