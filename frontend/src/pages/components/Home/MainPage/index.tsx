@@ -15,6 +15,7 @@ import { IconChevronsLeft, IconChevronsRight } from '@tabler/icons';
 import { useState, FC } from 'react';
 
 import ControlPanelSection from './ControlPanelSection';
+import MapSection from './MapSection';
 import RightCardSection from './RightCardsSection';
 
 const useStyles = createStyles(() => ({
@@ -142,7 +143,7 @@ const MainPage: FC = () => {
         </Header>
       }
     >
-      <Text>Resize app to see responsive navbar in action</Text>
+      <MapSection />
     </AppShell>
   );
 };
