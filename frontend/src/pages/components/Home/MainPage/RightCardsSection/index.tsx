@@ -1,10 +1,18 @@
-import { createStyles, Flex } from '@mantine/core';
+import { createStyles } from '@mantine/core';
 import { FC } from 'react';
 
 import RightCard, { RightCardProps } from './elements/RightCard';
 
-const useStyles = createStyles(() => ({
-  root: { padding: 'md', width: '100%', overflow: 'scroll' },
+const useStyles = createStyles((theme) => ({
+  root: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: theme.spacing.md,
+    gap: theme.spacing.md,
+    justifyContent: 'start',
+    alignItems: 'center',
+  },
 }));
 
 const RightCardSection: FC = () => {
@@ -42,18 +50,11 @@ const RightCardSection: FC = () => {
     },
   ];
   return (
-    <Flex
-      direction="column"
-      justify="start"
-      align="center"
-      gap="md"
-      p="md"
-      className={classes.root}
-    >
+    <div className={classes.root}>
       {cardItems.map((cardItem, i) => (
         <RightCard {...cardItem} key={i} />
       ))}
-    </Flex>
+    </div>
   );
 };
 

@@ -18,9 +18,8 @@ import ControlPanelSection from './ControlPanelSection';
 import RightCardSection from './RightCardsSection';
 
 const useStyles = createStyles(() => ({
-  root: { padding: 'md', width: '100%', overflow: 'scroll' },
   chevrons: { margin: '0 auto', alignItems: 'right' },
-  aside: { overflow: 'scroll' },
+  aside: { overflow: 'auto' },
 }));
 
 const scaleXRightCards = {
