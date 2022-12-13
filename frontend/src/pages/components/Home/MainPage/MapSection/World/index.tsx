@@ -34,13 +34,14 @@ const World: FC = () => {
       const svg = d3.select(Svg.current);
       const g = d3.select(G.current);
       Promise.all([
-        d3.json(worldGeoJsonUrl), // World shape
+        //d3.json(worldGeoJsonUrl), // World shape
+        d3.json('/worldAndJapan.json'),
         d3.csv('./data.csv'), // Position of circles
       ]).then((initialize) => {
         const worldGeo = initialize[0] as geoJsonDataType;
         const width = 1440;
         const height = 920;
-        const geoCenter: LatLngTuple = [137, 34];
+        const geoCenter: LatLngTuple = [0, 0];
         const geoScale = 300;
 
         const position1: LatLngTuple = [137.7261111111, 34.7108333333];
