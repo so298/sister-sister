@@ -1,6 +1,8 @@
 import { Card, Image, Text, createStyles } from '@mantine/core';
 import { FC } from 'react';
 
+import { CityItem } from '../../../../../../static/types/cityDataType';
+
 const useStyles = createStyles((theme) => ({
   item: {
     transition: 'box-shadow 150ms ease, transform 100ms ease',
@@ -17,23 +19,21 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export type RightCardProps = {
-  imgSrc: string;
-  alt: string;
-  cityName: string;
-  description: string;
-};
+export type RightCardProps = Pick<
+  CityItem,
+  'image' | 'cityName' | 'description'
+>;
 
 const RightCard: FC<RightCardProps> = (props) => {
   const { classes } = useStyles();
-  const { imgSrc, alt, cityName, description } = props;
+  const { image, cityName, description } = props;
   return (
     <div className={classes.wrapper}>
       <Card className={classes.item} shadow="sm" radius="md" withBorder>
         <Card.Section>
-          <Image src={imgSrc} height={160} alt={alt} />
+          <Image src={image} height={160} alt={cityName} />
         </Card.Section>
-        <Text pt="xs" pb="xs" weight={500}>
+        <Text pt="sm" pb="0" weight={500}>
           {cityName}
         </Text>
 
