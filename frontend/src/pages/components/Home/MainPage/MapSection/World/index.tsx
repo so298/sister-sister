@@ -32,6 +32,7 @@ const World: FC = () => {
       Promise.all([
         d3.json(
           'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
+          //'worldAndJapan.json',
         ), // World shape
         d3.csv('./data.csv'), // Position of circles
       ]).then((initialize) => {
