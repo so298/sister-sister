@@ -5,8 +5,8 @@ const World: FC = () => {
   // ###########################
   // recive links
   const link: any = [];
-  const source = [135, 44];
-  const target = [2.3, 30];
+  const source = [139, 35];
+  const target = [2.3, 48];
   const topush = { type: 'LineString', coordinates: [source, target] };
   link.push(topush);
   console.log(link);
@@ -17,18 +17,14 @@ const World: FC = () => {
   useEffect(() => {
     let svg: d3.Selection<SVGSVGElement, any, any, any>;
     let g: any;
-    let myPath: any;
     if (
       Svg.current !== null &&
       Svg.current !== undefined &&
       G.current !== null &&
-      G.current !== undefined &&
-      MyPath.current !== null &&
-      MyPath.current !== undefined
+      G.current !== undefined
     ) {
       svg = d3.select<SVGSVGElement, any>(Svg.current);
       g = d3.select<SVGGElement, any>(G.current);
-      myPath = d3.select<SVGGElement, any>(MyPath.current);
       Promise.all([
         d3.json(
           'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
@@ -73,7 +69,7 @@ const World: FC = () => {
           .attr('stroke', 'white')
           .attr('stroke-linejoin', 'round');
 
-        myPath
+        g.selectAll('myPath')
           .data(link)
           .join('path')
           .attr('d', function (d: any) {
@@ -158,7 +154,6 @@ const World: FC = () => {
     <>
       <svg ref={Svg}>
         <g ref={G} />
-        <g ref={MyPath} />
       </svg>
     </>
   );
