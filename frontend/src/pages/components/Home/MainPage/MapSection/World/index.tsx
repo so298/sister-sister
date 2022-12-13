@@ -1,52 +1,60 @@
 import * as d3 from 'd3';
+import { LatLngTuple } from 'leaflet';
 import React, { useRef, FC, useEffect } from 'react';
+
+import { CityLinkType } from '../../../../../static/types/cityLinkType';
+import {
+  MouseEventType,
+  ZoomEventType,
+} from '../../../../../static/types/eventTypes';
+import { geoJsonDataType } from '../../../../../static/types/geoJsonDataType';
+import { worldGeoJsonUrl } from '../../../../../static/urls';
 
 const World: FC = () => {
   // ###########################
   // recive links
-  const link: any = [];
-  const source = [139, 35];
-  const target = [2.3, 48];
-  const topush = { type: 'LineString', coordinates: [source, target] };
+  const link: CityLinkType[] = [];
+  const source: LatLngTuple = [139, 35];
+  const target: LatLngTuple = [2.3, 48];
+  const topush: CityLinkType = {
+    type: 'LineString',
+    coordinates: [source, target],
+  };
   link.push(topush);
-  console.log(link);
   //   ##############################
   const Svg = useRef<SVGSVGElement>(null);
   const G = useRef<SVGGElement>(null);
-  const MyPath = useRef<SVGGElement>(null);
   useEffect(() => {
-    let svg: d3.Selection<SVGSVGElement, any, any, any>;
-    let g: any;
     if (
       Svg.current !== null &&
       Svg.current !== undefined &&
       G.current !== null &&
       G.current !== undefined
     ) {
-      svg = d3.select<SVGSVGElement, any>(Svg.current);
-      g = d3.select<SVGGElement, any>(G.current);
+      const svg = d3.select(Svg.current);
+      const g = d3.select(G.current);
       Promise.all([
-        d3.json(
-          'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
-        ), // World shape
+        d3.json(worldGeoJsonUrl), // World shape
         d3.csv('./data.csv'), // Position of circles
       ]).then((initialize) => {
-        const worldGeo: any = initialize[0];
+        const worldGeo = initialize[0] as geoJsonDataType;
         const width = 1440;
         const height = 920;
-        const geoCenter: [number, number] = [137, 34];
+        const geoCenter: LatLngTuple = [137, 34];
         const geoScale = 300;
 
-        const zahyou1 = [137.7261111111, 34.7108333333];
+        const position1: LatLngTuple = [137.7261111111, 34.7108333333];
 
-        const projection: any = d3
+        const projection = d3
           .geoMercator()
           .center(geoCenter)
           .translate([width / 2, height / 2])
           .scale(geoScale);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const path: any = d3.geoPath().projection(projection);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const zoom: any = d3.zoom().scaleExtent([1, 8]).on('zoom', zoomed);
 
         svg
@@ -72,9 +80,7 @@ const World: FC = () => {
         g.selectAll('myPath')
           .data(link)
           .join('path')
-          .attr('d', function (d: any) {
-            return path(d);
-          })
+          .attr('d', (d) => path(d))
           .style('fill', 'none')
           .style('stroke', '#69b3a2')
           .style('stroke-width', 2);
@@ -82,44 +88,52 @@ const World: FC = () => {
         states.exit().remove();
         g.exit().remove();
 
-        const circles = g
-          .append('circle')
-          .attr('fill', '#0088DD')
-          .attr('stroke', 'white')
-          .attr('r', 2)
-          .attr('cx', projection(zahyou1)[0])
-          .attr('cy', projection(zahyou1)[1]);
-        const txt = g
-          .append('text')
-          .text('Hamamatsu')
-          .attr('font-size', 2)
-          .attr('x', projection(zahyou1)[0])
-          .attr('y', projection(zahyou1)[1] + 3);
+        const point1Projction = projection(position1);
+
+        if (point1Projction) {
+          // circle
+          g.append('circle')
+            .attr('fill', '#0088DD')
+            .attr('stroke', 'white')
+            .attr('r', 2)
+            .attr('cx', point1Projction[0])
+            .attr('cy', point1Projction[1]);
+          // text
+          g.append('text')
+            .text('Hamamatsu')
+            .attr('font-size', 2)
+            .attr('x', point1Projction[0])
+            .attr('y', point1Projction[1] + 3);
+        }
 
         svg.call(zoom);
 
         function reset() {
           states.transition().style('fill', null);
           if (svg.node() != null) {
-            const nodes: any = svg.node();
-            svg
-              .transition()
-              .duration(750)
-              .call(
-                zoom.transform,
-                d3.zoomIdentity,
-                d3.zoomTransform(nodes).invert([width / 2, height / 2]),
-              );
+            const nodes = svg.node();
+            if (nodes) {
+              svg
+                .transition()
+                .duration(750)
+                .call(
+                  zoom.transform,
+                  d3.zoomIdentity,
+                  d3.zoomTransform(nodes).invert([width / 2, height / 2]),
+                );
+            } else {
+              console.error('error: no svg nodes exists');
+            }
           }
           states.exit().remove();
           g.exit().remove();
         }
 
-        function clicked(event: React.MouseEvent<HTMLInputElement>, d: any) {
+        function clicked(event: MouseEventType, d: unknown) {
           const [[x0, y0], [x1, y1]] = path.bounds(d);
           event.stopPropagation();
           states.transition().style('fill', null);
-          d3.select<any, any>(event.target).transition().style('fill', 'red');
+          d3.select(event.target).transition().style('fill', 'red');
           svg
             .transition()
             .duration(750)
@@ -138,7 +152,7 @@ const World: FC = () => {
             );
         }
 
-        function zoomed(event: any) {
+        function zoomed(event: ZoomEventType) {
           const { transform } = event;
           g.attr('transform', transform);
           g.attr('stroke-width', 1 / transform.k);
