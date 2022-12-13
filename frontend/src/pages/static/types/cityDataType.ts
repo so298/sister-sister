@@ -1,13 +1,14 @@
-export type CityData = {
-  name: string;
+export type CityItem = {
+  cityName: string;
   position: {
-    long: number;
-    lat: number;
+    longitude: number;
+    latitude: number;
   };
-  sisterCities: string[];
   image?: string;
-  country?: string;
-  population?: number;
-  area?: number;
-  wikiUrl?: string;
+  country: string;
+  population: number;
+  area: number;
+  sisterCities: string[];
+  description?: string;
+  wikiUrl: string;
 };
