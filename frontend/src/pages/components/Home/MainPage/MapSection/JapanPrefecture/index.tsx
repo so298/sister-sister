@@ -1,16 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Text } from '@mantine/core';
 import * as d3 from 'd3';
-import React, { useRef, FC, useEffect, useState } from 'react';
+import React, { useRef, FC, useEffect } from 'react';
 import * as topojson from 'topojson';
 
-//const svg = useRef<SVGSVGElement>;
-const D3Test: FC = () => {
-  const [, setIsLoaded] = useState(false);
-  const handleIsLoaded = () => {
-    setIsLoaded((prev) => !prev);
-  };
+const JapanPrefecture: FC = () => {
   const Svg = useRef<SVGSVGElement>(null);
   const G = useRef<SVGGElement>(null);
   useEffect(() => {
@@ -22,15 +14,13 @@ const D3Test: FC = () => {
       G.current !== null &&
       G.current !== undefined
     ) {
-      //console.log(Svg.current);
-      // refer https://zenn.dev/fuuki/scraps/41d311695d0c23
       svg = d3.select<SVGSVGElement, any>(Svg.current);
       g = d3.select<SVGGElement, any>(G.current);
       d3.json('japan.topojson').then((data: any) => {
         const japan: any = topojson.feature(data, data.objects.japan);
 
-        const width = 600;
-        const height = 600;
+        const width = 1440;
+        const height = 920;
         const geoCenter: [number, number] = [137, 34];
         const geoScale = 1000;
 
@@ -146,12 +136,11 @@ const D3Test: FC = () => {
         return svg.node();
       });
     }
+    [Svg, G];
   });
 
   return (
     <>
-      <Text>D3Test</Text>
-      <button onClick={handleIsLoaded}>a</button>
       <svg ref={Svg}>
         <g ref={G} />
       </svg>
@@ -159,4 +148,4 @@ const D3Test: FC = () => {
   );
 };
 
-export default D3Test;
+export default JapanPrefecture;
