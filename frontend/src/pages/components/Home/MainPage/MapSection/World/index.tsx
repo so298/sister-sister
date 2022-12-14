@@ -1,29 +1,62 @@
 import * as d3 from 'd3';
 import { LatLngTuple } from 'leaflet';
-import React, { useRef, FC, useEffect } from 'react';
+import React, { useRef, FC, useEffect, useMemo } from 'react';
 
+import dummyData from '../../../../../../data/dummyData.json';
+import { CityDataType } from '../../../../../static/types/cityDataType';
 import { CityLinkType } from '../../../../../static/types/cityLinkType';
 import {
   MouseEventType,
   ZoomEventType,
 } from '../../../../../static/types/eventTypes';
 import { geoJsonDataType } from '../../../../../static/types/geoJsonDataType';
+import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
+import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 // import { worldGeoJsonUrl } from '../../../../../static/urls';
 
+const data: CityDataType[] = dummyData;
+
 const World: FC = () => {
-  // ###########################
-  // recive links
-  const link: CityLinkType[] = [];
-  const source: LatLngTuple = [139, 35];
-  const target: LatLngTuple = [2.3, 48];
-  const topush: CityLinkType = {
-    type: 'LineString',
-    coordinates: [source, target],
-  };
-  link.push(topush);
-  //   ##############################
+  const { sourceCityName, setSourceCityName, targetCityNames } =
+    useSearchModeState();
+
+  // const linkList: CityLinkType[] = [];
+  const linkList: CityLinkType[] = useMemo(() => {
+    const list: CityLinkType[] = [];
+    if (sourceCityName !== undefined) {
+      const sourceCityIndex = Number(cityNameIndexHash.get(sourceCityName));
+      const sourceCityInfo: CityDataType = data[sourceCityIndex];
+      const source: LatLngTuple = [
+        sourceCityInfo.position.longitude,
+        sourceCityInfo.position.latitude,
+      ];
+      targetCityNames?.forEach((d) => {
+        const targetCityIndex = Number(cityNameIndexHash.get(d));
+        const targetCityInfo: CityDataType = data[targetCityIndex];
+        const target: LatLngTuple = [
+          targetCityInfo.position.longitude,
+          targetCityInfo.position.latitude,
+        ];
+        const topush: CityLinkType = {
+          type: 'LineString',
+          coordinates: [source, target],
+        };
+        list.push(topush);
+      });
+      console.log({ list });
+    }
+    {
+      return list;
+    }
+  }, [targetCityNames]);
+
   const Svg = useRef<SVGSVGElement>(null);
   const G = useRef<SVGGElement>(null);
+
+  useEffect(() => {
+    console.log({ sourceCityName });
+  }, [sourceCityName]);
+
   useEffect(() => {
     if (
       Svg.current !== null &&
@@ -73,15 +106,13 @@ const World: FC = () => {
           .on('click', clicked)
           .attr('d', path);
 
-        // states.on('mouseover', handleMouseOver);
-
         g.append('path')
           .attr('fill', 'none')
           .attr('stroke', 'white')
           .attr('stroke-linejoin', 'round');
 
         g.selectAll('myPath')
-          .data(link)
+          .data(linkList)
           .join('path')
           .attr('d', (d) => path(d))
           .style('fill', 'none')
@@ -137,7 +168,8 @@ const World: FC = () => {
           event.stopPropagation();
           states.transition().style('fill', null);
           d3.select(event.target).transition().style('fill', 'red');
-          console.log(d.properties.nam_ja);
+          // set sourceCity
+          setSourceCityName(d.properties.nam_ja);
           svg
             .transition()
             .duration(750)
@@ -162,25 +194,10 @@ const World: FC = () => {
           g.attr('stroke-width', 1 / transform.k);
         }
 
-        // #########################################
-        function handleMouseOver(_: any, d: any) {
-          // const id: any = states.nodes().indexOf(this : any);
-          svg
-            .append('text')
-            // .attr('id', `pref-${id}`)
-            .attr('y', 20)
-            .text(`Prefecture : ${d.properties.nam_ja}`);
-        }
-        // function handleMouseOut(_: any, d: any) {
-        // const id = states.nodes().indexOf(this);
-        // d3.select(`#pref-${id}`).remove();
-        // }
-        // ##########################################
-
         return svg.node();
       });
     }
-    [Svg, G];
+    [Svg, G, targetCityNames, linkList];
   });
 
   return (
