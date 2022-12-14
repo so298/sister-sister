@@ -1,7 +1,7 @@
 import { Card, Image, Text, createStyles } from '@mantine/core';
 import { FC } from 'react';
 
-import { CityItem } from '../../../../../../static/types/cityDataType';
+import { CityDataType } from '../../../../../../static/types/cityDataType';
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -20,7 +20,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export type RightCardProps = Pick<
-  CityItem,
+  CityDataType,
   'image' | 'cityName' | 'description'
 >;
 

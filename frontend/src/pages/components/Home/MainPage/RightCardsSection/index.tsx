@@ -1,10 +1,17 @@
 import { createStyles } from '@mantine/core';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
-import { CityItem } from '../../../../static/types/cityDataType';
+import dummyData from '../../../../../data/dummyData.json';
+import undefinedData from '../../../../../data/undefinedData.json';
+import { CityDataType } from '../../../../static/types/cityDataType';
+import cityNameIndexHash from '../../../../utils/cityNameIndexHash';
+import { useModeState } from '../../Provider/hooks/useModeState';
+import { useSearchModeState } from '../../Provider/hooks/useSearchModeState';
 
-import JsonData from './contents/content.json';
 import RightCard, { RightCardProps } from './elements/RightCard';
+
+const data: CityDataType[] = dummyData;
+const undefindItem: CityDataType = undefinedData;
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -19,42 +26,30 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const RightCardSection: FC = () => {
-  const Items: CityItem[] = JsonData;
+  const { mode } = useModeState();
+  const { targetCityNames } = useSearchModeState();
 
   const { classes } = useStyles();
-  const cardItems: RightCardProps[] = [
-    {
-      image: '/youjinbou.jpeg',
-      cityName: 'Youjinbou Ramen',
-      description: 'おいしい',
-    },
-    {
-      image:
-        'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80',
-      cityName: 'Norway Fjord Adventures',
-      description:
-        'With Fjord Tours you can explore more of the magical fjord landscapes with tours and activities on and around the fjords of Norway',
-    },
-    {
-      image:
-        'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80',
 
-      cityName: 'Norway Fjord Adventures',
-      description:
-        'With Fjord Tours you can explore more of the magical fjord landscapes with tours and activities on and around the fjords of Norway',
-    },
+  const cardItems: RightCardProps[] = useMemo(() => {
+    const items: RightCardProps[] = [];
+    targetCityNames?.forEach((d) => {
+      const targetCityIndex = cityNameIndexHash.get(d);
+      if (typeof targetCityIndex !== 'undefined') {
+        const targetCityInfo: CityDataType = data[targetCityIndex];
+        items.push(targetCityInfo);
+      } else {
+        items.push(undefindItem);
+      }
+    });
     {
-      image:
-        'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80',
+      return items;
+    }
+  }, [targetCityNames]);
 
-      cityName: 'Norway Fjord Adventures',
-      description:
-        'With Fjord Tours you can explore more of the magical fjord landscapes with tours and activities on and around the fjords of Norway',
-    },
-  ];
   return (
     <div className={classes.root}>
-      {[...Items, ...cardItems].map((cardItem, i) => (
+      {[...cardItems, ...data].map((cardItem, i) => (
         <RightCard {...cardItem} key={i} />
       ))}
     </div>

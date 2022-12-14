@@ -1,29 +1,62 @@
 import * as d3 from 'd3';
 import { LatLngTuple } from 'leaflet';
-import React, { useRef, FC, useEffect } from 'react';
+import React, { useRef, FC, useEffect, useMemo } from 'react';
 
+import dummyData from '../../../../../../data/dummyData.json';
+import { CityDataType } from '../../../../../static/types/cityDataType';
 import { CityLinkType } from '../../../../../static/types/cityLinkType';
 import {
   MouseEventType,
   ZoomEventType,
 } from '../../../../../static/types/eventTypes';
 import { geoJsonDataType } from '../../../../../static/types/geoJsonDataType';
-//import { worldGeoJsonUrl } from '../../../../../static/urls';
+import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
+import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
+// import { worldGeoJsonUrl } from '../../../../../static/urls';
+
+const data: CityDataType[] = dummyData;
 
 const World: FC = () => {
-  // ###########################
-  // recive links
-  const link: CityLinkType[] = [];
-  const source: LatLngTuple = [139, 35];
-  const target: LatLngTuple = [2.3, 48];
-  const topush: CityLinkType = {
-    type: 'LineString',
-    coordinates: [source, target],
-  };
-  link.push(topush);
-  //   ##############################
+  const { sourceCityName, setSourceCityName, targetCityNames } =
+    useSearchModeState();
+
+  const linkList: CityLinkType[] = useMemo(() => {
+    const link: CityLinkType[] = [];
+    if (sourceCityName !== undefined) {
+      const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
+      if (typeof sourceCityIndex !== 'undefined') {
+        const sourceCityInfo: CityDataType = data[sourceCityIndex];
+        const source: LatLngTuple = [
+          sourceCityInfo.position.longitude,
+          sourceCityInfo.position.latitude,
+        ];
+        targetCityNames?.forEach((d) => {
+          const targetCityIndex = cityNameIndexHash.get(d);
+          if (typeof targetCityIndex !== 'undefined') {
+            const targetCityInfo: CityDataType = data[targetCityIndex];
+            const target: LatLngTuple = [
+              targetCityInfo.position.longitude,
+              targetCityInfo.position.latitude,
+            ];
+            const topush: CityLinkType = {
+              type: 'LineString',
+              coordinates: [source, target],
+            };
+            link.push(topush);
+          }
+        });
+      } else return [];
+    }
+    return link;
+  }, [targetCityNames]);
+
   const Svg = useRef<SVGSVGElement>(null);
   const G = useRef<SVGGElement>(null);
+
+  useEffect(() => {
+    console.log({ sourceCityName });
+  }, [sourceCityName]);
+
   useEffect(() => {
     if (
       Svg.current !== null &&
@@ -79,7 +112,7 @@ const World: FC = () => {
           .attr('stroke-linejoin', 'round');
 
         g.selectAll('myPath')
-          .data(link)
+          .data(linkList)
           .join('path')
           .attr('d', (d) => path(d))
           .style('fill', 'none')
@@ -133,11 +166,13 @@ const World: FC = () => {
           g.exit().remove();
         }
 
-        function clicked(event: MouseEventType, d: unknown) {
+        function clicked(event: MouseEventType, d: any) {
           const [[x0, y0], [x1, y1]] = path.bounds(d);
           event.stopPropagation();
           states.transition().style('fill', null);
           d3.select(event.target).transition().style('fill', 'red');
+          // set sourceCity
+          setSourceCityName(d.properties.nam_ja);
           svg
             .transition()
             .duration(750)
@@ -165,7 +200,7 @@ const World: FC = () => {
         return svg.node();
       });
     }
-    [Svg, G];
+    [Svg, G, linkList];
   });
 
   return (

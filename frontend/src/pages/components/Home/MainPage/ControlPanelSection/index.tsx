@@ -1,7 +1,10 @@
 import { Select, createStyles, Divider } from '@mantine/core';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
-import { ModeType, modeType } from '../../../../static/types/modeTypes';
+import { modeType } from '../../../../static/types/modeTypes';
+import { useModeState } from '../../Provider/hooks/useModeState';
+
+import SearchControlPanel from './SearchControlPanel';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -17,17 +20,18 @@ const useStyles = createStyles((theme) => ({
 
 const ControlPanelSection: FC = () => {
   const { classes } = useStyles();
-  const [, setMode] = useState<ModeType>('search');
-  //   const data =
+  const { mode, onModeChange } = useModeState();
+
   return (
     <div className={classes.root}>
       <Select
         label="Select Mode"
         placeholder="Pick one"
         data={Object.values(modeType)}
+        defaultValue="search"
         searchable
         required
-        onChange={(value: ModeType) => setMode(value)}
+        onChange={onModeChange}
         styles={(theme) => ({
           item: {
             // applies styles to selected item
@@ -46,6 +50,7 @@ const ControlPanelSection: FC = () => {
         })}
       />
       <Divider />
+      {mode == 'search' && <SearchControlPanel />}
     </div>
   );
 };

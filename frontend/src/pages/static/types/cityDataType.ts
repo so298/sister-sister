@@ -1,4 +1,4 @@
-export type CityItem = {
+export type CityDataType = {
   cityName: string;
   position: {
     longitude: number;

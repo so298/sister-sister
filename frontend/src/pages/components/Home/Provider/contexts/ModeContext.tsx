@@ -2,22 +2,19 @@ import { createContext, ReactNode, FC, useState, useCallback } from 'react';
 
 import { ModeType } from '../../../../static/types/modeTypes';
 
-export type DrawerState = {
+export type ModeState = {
   mode: ModeType;
   onModeChange: (value: ModeType) => void;
 };
 
-export const drawerStateContext = createContext<DrawerState | undefined>(
-  undefined,
-);
+export const modeStateContext = createContext<ModeState | undefined>(undefined);
 
-const { Provider } = drawerStateContext;
+const { Provider } = modeStateContext;
 
-interface DrawerStateProviderProps {
+interface ModeStateProviderProps {
   children: ReactNode;
 }
-
-export const DrawerStateProvider: FC<DrawerStateProviderProps> = (props) => {
+export const ModeStateProvider: FC<ModeStateProviderProps> = (props) => {
   const { children } = props;
 
   const [mode, setMode] = useState<ModeType>('search');
