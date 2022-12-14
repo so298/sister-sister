@@ -8,7 +8,7 @@ import {
   ZoomEventType,
 } from '../../../../../static/types/eventTypes';
 import { geoJsonDataType } from '../../../../../static/types/geoJsonDataType';
-import { worldGeoJsonUrl } from '../../../../../static/urls';
+//import { worldGeoJsonUrl } from '../../../../../static/urls';
 
 const World: FC = () => {
   // ###########################
@@ -56,7 +56,7 @@ const World: FC = () => {
         const path: any = d3.geoPath().projection(projection);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const zoom: any = d3.zoom().scaleExtent([1, 8]).on('zoom', zoomed);
+        const zoom: any = d3.zoom().scaleExtent([1, 100]).on('zoom', zoomed);
 
         svg
           .attr('width', width)
@@ -93,6 +93,9 @@ const World: FC = () => {
 
         if (point1Projction) {
           // circle
+          g.selectAll('circle').remove();
+          g.selectAll('text').remove();
+
           g.append('circle')
             .attr('fill', '#0088DD')
             .attr('stroke', 'white')
@@ -144,7 +147,7 @@ const World: FC = () => {
                 .translate(width / 2, height / 2)
                 .scale(
                   Math.min(
-                    8,
+                    100,
                     0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height),
                   ),
                 )
