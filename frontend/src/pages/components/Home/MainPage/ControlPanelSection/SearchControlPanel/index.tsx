@@ -1,6 +1,6 @@
 import { Button, createStyles } from '@mantine/core';
 import { IconSearch } from '@tabler/icons';
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback } from 'react';
 
 import dummyData from '../../../../../../data/dummyData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
@@ -23,28 +23,22 @@ const useStyles = createStyles((theme) => ({
 
 const SearchControlPanel: FC = () => {
   const { classes } = useStyles();
-  const {
-    searching,
-    setSearching,
-    sourceCityName,
-    targetCityNames,
-    setTargetCityNames,
-  } = useSearchModeState();
+  const { setSearching, sourceCityName, setTargetCityNames } =
+    useSearchModeState();
 
   const onSearch = useCallback(() => {
     setSearching(true);
-    if (searching && sourceCityName !== undefined) {
+    if (sourceCityName !== undefined) {
       // undefind to be 0
-      const sourceCityIndex = Number(cityNameIndexHash.get(sourceCityName));
-      const sourceCityInfo: CityDataType = data[sourceCityIndex];
-      setTargetCityNames(sourceCityInfo.sisterCities);
+      const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
+      if (typeof sourceCityIndex !== 'undefined') {
+        const sourceCityInfo: CityDataType = data[sourceCityIndex];
+        setTargetCityNames(sourceCityInfo.sisterCities);
+      } else {
+        setTargetCityNames([]);
+      }
     }
-  }, [searching, sourceCityName]);
-
-  // run onSearch again
-  useEffect(() => {
-    if (searching) onSearch();
-  }, [searching, targetCityNames]);
+  }, [setSearching, sourceCityName, setTargetCityNames]);
 
   return (
     <div className={classes.root}>

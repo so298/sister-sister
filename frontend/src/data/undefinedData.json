@@ -1,0 +1,10 @@
+{
+  "cityName": "undefined",
+  "position": { "latitude": 0, "longitude": 0 },
+  "image": "",
+  "country": "undefined",
+  "population": 0,
+  "area": 0,
+  "sisterCities": [],
+  "wikiUrl": "https://www.ee.t.u-tokyo.ac.jp/"
+}

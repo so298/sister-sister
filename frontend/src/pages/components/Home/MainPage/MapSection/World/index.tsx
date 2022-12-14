@@ -20,34 +20,34 @@ const World: FC = () => {
   const { sourceCityName, setSourceCityName, targetCityNames } =
     useSearchModeState();
 
-  // const linkList: CityLinkType[] = [];
   const linkList: CityLinkType[] = useMemo(() => {
-    const list: CityLinkType[] = [];
+    const link: CityLinkType[] = [];
     if (sourceCityName !== undefined) {
-      const sourceCityIndex = Number(cityNameIndexHash.get(sourceCityName));
-      const sourceCityInfo: CityDataType = data[sourceCityIndex];
-      const source: LatLngTuple = [
-        sourceCityInfo.position.longitude,
-        sourceCityInfo.position.latitude,
-      ];
-      targetCityNames?.forEach((d) => {
-        const targetCityIndex = Number(cityNameIndexHash.get(d));
-        const targetCityInfo: CityDataType = data[targetCityIndex];
-        const target: LatLngTuple = [
-          targetCityInfo.position.longitude,
-          targetCityInfo.position.latitude,
+      const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
+      if (typeof sourceCityIndex !== 'undefined') {
+        const sourceCityInfo: CityDataType = data[sourceCityIndex];
+        const source: LatLngTuple = [
+          sourceCityInfo.position.longitude,
+          sourceCityInfo.position.latitude,
         ];
-        const topush: CityLinkType = {
-          type: 'LineString',
-          coordinates: [source, target],
-        };
-        list.push(topush);
-      });
-      console.log({ list });
+        targetCityNames?.forEach((d) => {
+          const targetCityIndex = cityNameIndexHash.get(d);
+          if (typeof targetCityIndex !== 'undefined') {
+            const targetCityInfo: CityDataType = data[targetCityIndex];
+            const target: LatLngTuple = [
+              targetCityInfo.position.longitude,
+              targetCityInfo.position.latitude,
+            ];
+            const topush: CityLinkType = {
+              type: 'LineString',
+              coordinates: [source, target],
+            };
+            link.push(topush);
+          }
+        });
+      } else return [];
     }
-    {
-      return list;
-    }
+    return link;
   }, [targetCityNames]);
 
   const Svg = useRef<SVGSVGElement>(null);
@@ -197,7 +197,7 @@ const World: FC = () => {
         return svg.node();
       });
     }
-    [Svg, G, targetCityNames, linkList];
+    [Svg, G, linkList];
   });
 
   return (

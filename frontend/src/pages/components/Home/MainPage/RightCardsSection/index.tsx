@@ -2,15 +2,16 @@ import { createStyles } from '@mantine/core';
 import { FC, useMemo } from 'react';
 
 import dummyData from '../../../../../data/dummyData.json';
+import undefinedData from '../../../../../data/undefinedData.json';
 import { CityDataType } from '../../../../static/types/cityDataType';
 import cityNameIndexHash from '../../../../utils/cityNameIndexHash';
 import { useModeState } from '../../Provider/hooks/useModeState';
 import { useSearchModeState } from '../../Provider/hooks/useSearchModeState';
 
-import JsonData from './contents/content.json';
 import RightCard, { RightCardProps } from './elements/RightCard';
 
 const data: CityDataType[] = dummyData;
+const undefindItem: CityDataType = undefinedData;
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -25,7 +26,6 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const RightCardSection: FC = () => {
-  const Items: CityDataType[] = JsonData;
   const { mode } = useModeState();
   const { targetCityNames } = useSearchModeState();
 
@@ -34,9 +34,13 @@ const RightCardSection: FC = () => {
   const cardItems: RightCardProps[] = useMemo(() => {
     const items: RightCardProps[] = [];
     targetCityNames?.forEach((d) => {
-      const targetCityIndex = Number(cityNameIndexHash.get(d));
-      const targetCityInfo: CityDataType = data[targetCityIndex];
-      items.push(targetCityInfo);
+      const targetCityIndex = cityNameIndexHash.get(d);
+      if (typeof targetCityIndex !== 'undefined') {
+        const targetCityInfo: CityDataType = data[targetCityIndex];
+        items.push(targetCityInfo);
+      } else {
+        items.push(undefindItem);
+      }
     });
     {
       return items;
@@ -45,7 +49,7 @@ const RightCardSection: FC = () => {
 
   return (
     <div className={classes.root}>
-      {[...cardItems, ...Items].map((cardItem, i) => (
+      {[...cardItems, ...data].map((cardItem, i) => (
         <RightCard {...cardItem} key={i} />
       ))}
     </div>
