@@ -8,7 +8,7 @@ import {
   ZoomEventType,
 } from '../../../../../static/types/eventTypes';
 import { geoJsonDataType } from '../../../../../static/types/geoJsonDataType';
-import { worldGeoJsonUrl } from '../../../../../static/urls';
+// import { worldGeoJsonUrl } from '../../../../../static/urls';
 
 const World: FC = () => {
   // ###########################
@@ -73,6 +73,8 @@ const World: FC = () => {
           .on('click', clicked)
           .attr('d', path);
 
+        // states.on('mouseover', handleMouseOver);
+
         g.append('path')
           .attr('fill', 'none')
           .attr('stroke', 'white')
@@ -130,11 +132,12 @@ const World: FC = () => {
           g.exit().remove();
         }
 
-        function clicked(event: MouseEventType, d: unknown) {
+        function clicked(event: MouseEventType, d: any) {
           const [[x0, y0], [x1, y1]] = path.bounds(d);
           event.stopPropagation();
           states.transition().style('fill', null);
           d3.select(event.target).transition().style('fill', 'red');
+          console.log(d.properties.nam_ja);
           svg
             .transition()
             .duration(750)
@@ -158,6 +161,21 @@ const World: FC = () => {
           g.attr('transform', transform);
           g.attr('stroke-width', 1 / transform.k);
         }
+
+        // #########################################
+        function handleMouseOver(_: any, d: any) {
+          // const id: any = states.nodes().indexOf(this : any);
+          svg
+            .append('text')
+            // .attr('id', `pref-${id}`)
+            .attr('y', 20)
+            .text(`Prefecture : ${d.properties.nam_ja}`);
+        }
+        // function handleMouseOut(_: any, d: any) {
+        // const id = states.nodes().indexOf(this);
+        // d3.select(`#pref-${id}`).remove();
+        // }
+        // ##########################################
 
         return svg.node();
       });

@@ -1,12 +1,17 @@
 import { FC } from 'react';
 
 import MainPage from './MainPage';
+import { ModeStateProvider } from './Provider/contexts/ModeContext';
+import { SearchModeStateProvider } from './Provider/contexts/SearchModeContext';
 
 export const Home: FC = () => {
-  // const [opened, setOpened] = useState<boolean>(false);
   return (
     <>
-      <MainPage />
+      <ModeStateProvider>
+        <SearchModeStateProvider>
+          <MainPage />
+        </SearchModeStateProvider>
+      </ModeStateProvider>
     </>
   );
 };
