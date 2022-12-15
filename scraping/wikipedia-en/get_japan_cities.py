@@ -1,16 +1,41 @@
 import sys
+import json
 
 from get_city_info import get_city_info
 from read_page import read_page_a
+from util import print_color_url
+
+
+def save_json(obj, filepath: str):
+    with open(filepath, 'w') as f:
+        json.dump(obj, f, ensure_ascii=False)
 
 
 if __name__ == "__main__":
-    cities = read_page_a("https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Japan")
+    cities = read_page_a(
+        "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Japan")
     # print(cities, file=sys.stderr)
+    results = []
 
-    for city in cities:
+    for i, city in enumerate(cities):
         url = city['city_url']
         name = city['city_name']
-        print(name, url, file=sys.stderr)
+        print_color_url(url)
         info = get_city_info(city['city_url'], name=city['city_name'])
-        print(info)
+        print(info, file=sys.stderr)
+
+        sisters_info = []
+        for sister in city['sister']:
+            sis_info = get_city_info(
+                name=sister['city_name'], wiki_url=sister['city_url'])
+            sisters_info.append(sis_info)
+
+        results.append({
+            'city': info,
+            'sisters': sisters_info
+        })
+
+        if i % 10 == 0:
+            save_json(results, 'cache/japan_cities_temp.json')
+
+    save_json(results, 'cache/japan_cities.json')
