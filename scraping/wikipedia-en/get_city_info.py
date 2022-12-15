@@ -4,8 +4,6 @@ import pathlib
 import json
 from functools import cache
 
-from copy import deepcopy
-
 from util import print_color_url
 
 
@@ -92,14 +90,7 @@ def get_japanese_info(soup: BeautifulSoup, is_ja_pref=False):
         if wiki_url_ja:
             ret['urlJa'] = wiki_url_ja.get('href')
 
-        ret = deepcopy(ret)
-        del ja_soup
-
-    ret_cp = deepcopy(ret)
-
-    del ret
-
-    return ret_cp
+    return ret
 
 
 @cache
@@ -147,12 +138,7 @@ def get_city_info(wiki_url: str, name: str, country=None):
         if 'prefecture' in ja_info.keys():
             ret['prefecture'] = ja_info["prefecture"]
 
-    ret_cp = deepcopy(ret)
-
-    del ret
-    del soup
-
-    return ret_cp
+    return ret
 
 # info = (get_city_info("https://en.wikipedia.org/wiki/Akita_(city)", "Arita"))
 # print(info)
