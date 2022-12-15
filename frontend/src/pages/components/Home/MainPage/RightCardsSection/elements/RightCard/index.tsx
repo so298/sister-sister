@@ -31,7 +31,13 @@ const RightCard: FC<RightCardProps> = (props) => {
     <div className={classes.wrapper}>
       <Card className={classes.item} shadow="sm" radius="md" withBorder>
         <Card.Section>
-          <Image src={image} height={160} alt={cityName} />
+          <Image
+            src={
+              typeof image === undefined || image === '' ? 'noImage.png' : image
+            }
+            height={160}
+            alt={cityName}
+          />
         </Card.Section>
         <Text pt="sm" pb="0" weight={500}>
           {cityName}

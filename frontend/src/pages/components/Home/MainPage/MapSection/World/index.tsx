@@ -17,6 +17,8 @@ import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 
 const data: CityDataType[] = dummyData;
 
+const ZOOM_EXTENT = 20;
+
 const World: FC = () => {
   const { sourceCityName, setSourceCityName, targetCityNames } =
     useSearchModeState();
@@ -92,7 +94,10 @@ const World: FC = () => {
         const path: any = d3.geoPath().projection(projection);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const zoom: any = d3.zoom().scaleExtent([1, 100]).on('zoom', zoomed);
+        const zoom: any = d3
+          .zoom()
+          .scaleExtent([1, ZOOM_EXTENT])
+          .on('zoom', zoomed);
 
         svg
           .attr('width', width)
@@ -185,7 +190,7 @@ const World: FC = () => {
                 .translate(width / 2, height / 2)
                 .scale(
                   Math.min(
-                    100,
+                    ZOOM_EXTENT,
                     0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height),
                   ),
                 )
