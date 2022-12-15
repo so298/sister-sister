@@ -4,13 +4,13 @@ import pathlib
 import json
 from functools import cache
 
-from util import print_color_url
+from util import print_color_url, parse_float, parse_int
 
 
 def get_point(soup: BeautifulSoup):
     point = soup.find(attrs={"property": "georss:point"})
     if point:
-        latitude, longtitude = map(float, point.get_text().split())
+        latitude, longtitude = map(parse_float, point.get_text().split())
         return latitude, longtitude
 
     return (None, None)
@@ -28,16 +28,19 @@ def get_country(soup: BeautifulSoup):
 def get_area(soup: BeautifulSoup):
     area_total = soup.find(attrs={"property": "dbo:areaTotal"})
     if area_total != None:
-        area = float(area_total.get_text()) / 10**6
-        return area
+        area_m2 = parse_float(area_total.get_text())
+        if area_m2:
+            return area_m2 / 10**6
 
     area_total_km = soup.find(attrs={"property": "dbp:areaTotalKm"})
     if area_total_km != None:
-        return float(area_total_km.get_text())
+        parsed = parse_float(area_total_km.get_text())
+        if parsed:
+            return parsed
 
     area_km = soup.find(attrs={"property": "dbp:areaKm"})
     if area_km != None:
-        return float(area_km.get_text())
+        return parse_float(area_km.get_text())
 
     return None
 
@@ -45,11 +48,8 @@ def get_area(soup: BeautifulSoup):
 def get_population(soup: BeautifulSoup):
     population = soup.find(attrs={"property": "dbp:populationTotal"})
     if population != None:
-        try:
-            val = int(population.get_text())
-            return val
-        except ValueError:
-            return None
+        val = parse_int(population.get_text())
+        return val
 
     return None
 
