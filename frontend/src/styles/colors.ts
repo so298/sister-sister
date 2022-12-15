@@ -20,7 +20,7 @@ export const colorsPallet: Record<string, Tuple<string, 10>> = {
     '#FFFFFF',
     '#FFFFFF',
     '#FFFFFF',
-    '#FFFFFF',
+    '#EEEEEE',
     '#FFFFFF',
     '#FFFFFF',
     '#FFFFFF',
