@@ -1,6 +1,24 @@
 import requests
 from bs4 import BeautifulSoup
 import pathlib
+import json
+
+def get_point(soup: BeautifulSoup):
+    point = soup.find(attrs={"property": "georss:point"})
+    if point:
+        latitude, longtitude = map(float, point.get_text().split())
+        return latitude, longtitude
+    
+    return (None, None)
+
+
+def get_country(soup: BeautifulSoup):
+    country_a = soup.find(attrs={"rel": "dbo:country"})
+    if country_a:
+        country_url = country_a.get("href")
+        return pathlib.Path(country_url).name
+    
+    return None
 
 def get_area(soup: BeautifulSoup):
     area_total = soup.find(attrs={"property": "dbo:areaTotal"})
@@ -21,16 +39,15 @@ def get_population(soup: BeautifulSoup):
     
     return None
 
-def get_city_info(wiki_url: str, name: str):
+def get_city_info(wiki_url: str, name: str, country=None):
     name_with_country = pathlib.Path(wiki_url).name
     dbpedia_url = f"https://dbpedia.org/page/{name_with_country}"
     res = requests.get(dbpedia_url)
     soup = BeautifulSoup(res.content, "html.parser")
+    latitude, longtitude = get_point(soup)
 
-    point = soup.find(attrs={"property": "georss:point"})
-    latitude, longtitude = map(float, point.get_text().split())
-    country_url = soup.find(attrs={"rel": "dbo:country"}).get("href")
-    country = pathlib.Path(country_url).name
+    if country == None:
+        country = get_country(soup)
     area = get_area(soup)
     population = get_population(soup)
 
@@ -39,7 +56,7 @@ def get_city_info(wiki_url: str, name: str):
         "nameJa": "",
         "position": {
             "latitude": latitude,
-            "longtitude": longtitude
+            "longtitude": longtitude,
         },
         "country": country,
         "area": area,
@@ -49,3 +66,6 @@ def get_city_info(wiki_url: str, name: str):
         "population": population
     }
 
+# info = (get_city_info("https://en.wikipedia.org/wiki/Akita_(city)", "Arita"))
+# print(info)
+# print(json.dumps(info))
