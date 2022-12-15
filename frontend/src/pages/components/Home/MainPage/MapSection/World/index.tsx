@@ -10,6 +10,7 @@ import {
   ZoomEventType,
 } from '../../../../../static/types/eventTypes';
 import { geoJsonDataType } from '../../../../../static/types/geoJsonDataType';
+import { useWindowSize } from '../../../../../utils/GetWindowSize';
 import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 // import { worldGeoJsonUrl } from '../../../../../static/urls';
@@ -19,6 +20,7 @@ const data: CityDataType[] = dummyData;
 const World: FC = () => {
   const { sourceCityName, setSourceCityName, targetCityNames } =
     useSearchModeState();
+  const [width, height] = useWindowSize();
 
   const linkList: CityLinkType[] = useMemo(() => {
     const link: CityLinkType[] = [];
@@ -72,8 +74,9 @@ const World: FC = () => {
         d3.csv('./data.csv'), // Position of circles
       ]).then((initialize) => {
         const worldGeo = initialize[0] as geoJsonDataType;
-        const width = 1920;
-        const height = 1080;
+        //const width = 1440; //1920;
+        //const height = 720; //1080;
+
         const geoCenter: LatLngTuple = [0, 0];
         const geoScale = 300;
 
