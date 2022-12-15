@@ -49,7 +49,7 @@ const RightCardSection: FC = () => {
 
   return (
     <div className={classes.root}>
-      {[...cardItems, ...data].map((cardItem, i) => (
+      {[...cardItems].map((cardItem, i) => (
         <RightCard {...cardItem} key={i} />
       ))}
     </div>

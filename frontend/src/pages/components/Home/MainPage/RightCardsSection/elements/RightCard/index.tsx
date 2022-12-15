@@ -14,7 +14,6 @@ const useStyles = createStyles((theme) => ({
     },
   },
   wrapper: {
-    //overflow: 'scroll',
     width: '100%',
   },
 }));
