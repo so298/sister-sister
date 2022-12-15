@@ -12,7 +12,9 @@ import {
   Transition,
 } from '@mantine/core';
 import { IconChevronsLeft, IconChevronsRight } from '@tabler/icons';
-import { useState, FC } from 'react';
+import { useState, FC, useEffect } from 'react';
+
+import { useSearchModeState } from '../Provider/hooks/useSearchModeState';
 
 import ControlPanelSection from './ControlPanelSection';
 import MapSection from './MapSection';
@@ -39,8 +41,14 @@ const scaleXControlPanel = {
 const MainPage: FC = () => {
   const theme = useMantineTheme();
   const { classes } = useStyles();
-  const [controlPanelOpened, setControlPanelOpened] = useState<boolean>(false);
-  const [rightCardOpend, setRightCardOpend] = useState<boolean>(false);
+  const [controlPanelOpened, setControlPanelOpened] = useState<boolean>(true);
+  const [rightCardOpend, setRightCardOpened] = useState<boolean>(false);
+  const { targetCityNames } = useSearchModeState();
+
+  useEffect(() => {
+    setRightCardOpened(true);
+  }, [targetCityNames]);
+
   return (
     <AppShell
       styles={{
@@ -51,24 +59,25 @@ const MainPage: FC = () => {
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       navbar={
-        <Transition
-          mounted={controlPanelOpened}
-          transition={scaleXControlPanel}
-          duration={500}
-          timingFunction="ease"
+        <Navbar
+          // zIndex={100}
+          hiddenBreakpoint={theme.breakpoints.xl}
+          hidden={!controlPanelOpened}
+          width={{ sm: 300, lg: 300, md: 300 }}
         >
-          {(styles) => (
-            <div style={{ ...styles }}>
-              <Navbar
-                hiddenBreakpoint={theme.breakpoints.xl}
-                hidden={!controlPanelOpened}
-                width={{ sm: 300, lg: 300, md: 300 }}
-              >
+          <Transition
+            mounted={controlPanelOpened}
+            transition={scaleXControlPanel}
+            duration={500}
+            timingFunction="ease"
+          >
+            {(styles) => (
+              <div style={{ ...styles }}>
                 <ControlPanelSection />
-              </Navbar>
-            </div>
-          )}
-        </Transition>
+              </div>
+            )}
+          </Transition>
+        </Navbar>
       }
       aside={
         <Aside
@@ -126,7 +135,9 @@ const MainPage: FC = () => {
             <ActionIcon
               className={classes.chevrons}
               onClick={() =>
-                setRightCardOpend((prevRightCardOpend) => !prevRightCardOpend)
+                setRightCardOpened(
+                  (prevRightCardOpened) => !prevRightCardOpened,
+                )
               }
               size="md"
               color={theme.colors.gray[6]}
