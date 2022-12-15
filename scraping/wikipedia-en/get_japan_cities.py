@@ -35,11 +35,13 @@ if __name__ == "__main__":
 
     for i, city in enumerate(cities):
 
-        # results.append(get_info(city))
-        res = get_info(city)
+        results.append(get_info(city))
+        # res = get_info(city)
 
-        with open('cache/japan_cities.jsonl', mode='a') as f:
-            json.dump(res, f)
-            print(file=f)
+        # with open('cache/japan_cities.jsonl', mode='a') as f:
+        #     json.dump(res, f)
+        #     print(file=f)
 
-    # save_json(results, 'cache/japan_cities.json')
+        save_json(results, 'cache/japan_cities_temp.json')
+
+    save_json(results, 'cache/japan_cities.json')
