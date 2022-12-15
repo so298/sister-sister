@@ -18,6 +18,7 @@ const useStyles = createStyles((theme) => ({
       padding: theme.spacing.sm,
     },
     visibility: 'visible',
+    zIndex: 100,
   },
 }));
 

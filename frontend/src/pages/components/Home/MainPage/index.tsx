@@ -12,7 +12,9 @@ import {
   Transition,
 } from '@mantine/core';
 import { IconChevronsLeft, IconChevronsRight } from '@tabler/icons';
-import { useState, FC } from 'react';
+import { useState, FC, useEffect } from 'react';
+
+import { useSearchModeState } from '../Provider/hooks/useSearchModeState';
 
 import ControlPanelSection from './ControlPanelSection';
 import MapSection from './MapSection';
@@ -27,6 +29,7 @@ const useStyles = createStyles((theme) => ({
     fontSize: 3 * theme.spacing.xs,
     letterSpacing: theme.spacing.xs / 2,
   },
+  navbar: { position: 'sticky' },
 }));
 
 const scaleXRightCards = {
@@ -46,7 +49,13 @@ const MainPage: FC = () => {
   const theme = useMantineTheme();
   const { classes } = useStyles();
   const [controlPanelOpened, setControlPanelOpened] = useState<boolean>(true);
-  const [rightCardOpend, setRightCardOpend] = useState<boolean>(false);
+  const [rightCardOpend, setRightCardOpened] = useState<boolean>(false);
+  const { targetCityNames } = useSearchModeState();
+
+  useEffect(() => {
+    targetCityNames && setRightCardOpened(true);
+  }, [targetCityNames]);
+
   return (
     <AppShell
       styles={{
@@ -67,6 +76,7 @@ const MainPage: FC = () => {
           {(styles) => (
             <div style={{ ...styles }}>
               <Navbar
+                className={classes.navbar}
                 hiddenBreakpoint={theme.breakpoints.xl}
                 hidden={!controlPanelOpened}
                 width={{ sm: 300, lg: 300, md: 300 }}
@@ -133,7 +143,9 @@ const MainPage: FC = () => {
             <ActionIcon
               className={classes.chevrons}
               onClick={() =>
-                setRightCardOpend((prevRightCardOpend) => !prevRightCardOpend)
+                setRightCardOpened(
+                  (prevRightCardOpened) => !prevRightCardOpened,
+                )
               }
               size="xl"
               color={theme.colors.white[0]}

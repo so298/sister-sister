@@ -8,6 +8,7 @@ import SearchControlPanel from './SearchControlPanel';
 
 const useStyles = createStyles((theme) => ({
   root: {
+    position: 'absolute',
     display: 'flex',
     flexDirection: 'column',
     padding: theme.spacing.md,

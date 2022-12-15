@@ -73,7 +73,7 @@ const World: FC = () => {
       ]).then((initialize) => {
         const worldGeo = initialize[0] as geoJsonDataType;
         const width = 1920;
-        const height = 920;
+        const height = 1080;
         const geoCenter: LatLngTuple = [0, 0];
         const geoScale = 300;
 
