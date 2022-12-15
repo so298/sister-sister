@@ -23,6 +23,7 @@ import RightCardSection from './RightCardsSection';
 const useStyles = createStyles(() => ({
   chevrons: { margin: '0 auto', alignItems: 'right' },
   aside: { overflow: 'auto' },
+  navbar: { position: 'sticky' },
 }));
 
 const scaleXRightCards = {
@@ -46,7 +47,7 @@ const MainPage: FC = () => {
   const { targetCityNames } = useSearchModeState();
 
   useEffect(() => {
-    setRightCardOpened(true);
+    targetCityNames && setRightCardOpened(true);
   }, [targetCityNames]);
 
   return (
@@ -60,25 +61,25 @@ const MainPage: FC = () => {
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       navbar={
-        <Navbar
-          // zIndex={100}
-          hiddenBreakpoint={theme.breakpoints.xl}
-          hidden={!controlPanelOpened}
-          width={{ sm: 300, lg: 300, md: 300 }}
+        <Transition
+          mounted={controlPanelOpened}
+          transition={scaleXControlPanel}
+          duration={500}
+          timingFunction="ease"
         >
-          <Transition
-            mounted={controlPanelOpened}
-            transition={scaleXControlPanel}
-            duration={500}
-            timingFunction="ease"
-          >
-            {(styles) => (
-              <div style={{ ...styles }}>
+          {(styles) => (
+            <div style={{ ...styles }}>
+              <Navbar
+                className={classes.navbar}
+                hiddenBreakpoint={theme.breakpoints.xl}
+                hidden={!controlPanelOpened}
+                width={{ sm: 300, lg: 300, md: 300 }}
+              >
                 <ControlPanelSection />
-              </div>
-            )}
-          </Transition>
-        </Navbar>
+              </Navbar>
+            </div>
+          )}
+        </Transition>
       }
       aside={
         <Aside

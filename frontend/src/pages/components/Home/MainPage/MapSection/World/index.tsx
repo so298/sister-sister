@@ -72,8 +72,8 @@ const World: FC = () => {
         d3.csv('./data.csv'), // Position of circles
       ]).then((initialize) => {
         const worldGeo = initialize[0] as geoJsonDataType;
-        const width = 1440;
-        const height = 920;
+        const width = 1920;
+        const height = 1080;
         const geoCenter: LatLngTuple = [0, 0];
         const geoScale = 300;
 
