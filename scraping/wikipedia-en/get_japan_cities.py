@@ -33,6 +33,8 @@ if __name__ == "__main__":
         "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Japan")
     # print(cities, file=sys.stderr)
 
+    results = []
+
     for i, city in enumerate(cities):
 
         results.append(get_info(city))
