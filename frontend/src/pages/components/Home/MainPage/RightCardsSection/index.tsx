@@ -27,8 +27,7 @@ const useStyles = createStyles((theme) => ({
 
 const RightCardSection: FC = () => {
   const { mode } = useModeState();
-  const { sourceCityName, setSourceCityName, targetCityNames } =
-    useSearchModeState();
+  const { targetCityNames } = useSearchModeState();
 
   const { classes } = useStyles();
 
