@@ -83,7 +83,7 @@ def get_japanese_info(soup: BeautifulSoup, is_ja_pref=False):
                 continue
 
         name_ja = ja_soup.find(attrs={'property': 'prop-ja:name'})
-        if pref:
+        if name_ja:
             ret['nameJa'] = name_ja.get_text()
 
         wiki_url_ja = ja_soup.find(attrs={'rel': 'foaf:isPrimaryTopicOf'})
