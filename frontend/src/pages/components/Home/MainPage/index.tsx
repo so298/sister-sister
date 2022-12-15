@@ -39,13 +39,14 @@ const scaleXControlPanel = {
 const MainPage: FC = () => {
   const theme = useMantineTheme();
   const { classes } = useStyles();
-  const [controlPanelOpened, setControlPanelOpened] = useState<boolean>(false);
+  const [controlPanelOpened, setControlPanelOpened] = useState<boolean>(true);
   const [rightCardOpend, setRightCardOpend] = useState<boolean>(false);
   return (
     <AppShell
       styles={{
         main: {
           background: theme.colors.gray[0],
+          padding: '0',
         },
       }}
       navbarOffsetBreakpoint="sm"
@@ -115,9 +116,9 @@ const MainPage: FC = () => {
                     (prevControlPanelOpened) => !prevControlPanelOpened,
                   )
                 }
-                size="sm"
-                color={theme.colors.gray[6]}
-                mr="xl"
+                size="md"
+                color={theme.colors.white[6]}
+                mr="lg"
                 transitionDuration={500}
               />
             </MediaQuery>
@@ -128,15 +129,23 @@ const MainPage: FC = () => {
               onClick={() =>
                 setRightCardOpend((prevRightCardOpend) => !prevRightCardOpend)
               }
-              size="md"
-              color={theme.colors.gray[6]}
-              mr="xl"
+              size="xl"
+              color={theme.colors.white[0]}
+              mr="sm"
               //transitionDuration={500}
             >
               {rightCardOpend ? (
-                <IconChevronsRight size="md" color={theme.colors.gray[6]} />
+                <IconChevronsRight
+                  size="lg"
+                  color={theme.colors.white[6]}
+                  strokeWidth={1.3}
+                />
               ) : (
-                <IconChevronsLeft size="md" color={theme.colors.gray[6]} />
+                <IconChevronsLeft
+                  size="lg"
+                  color={theme.colors.white[6]}
+                  strokeWidth={1.3}
+                />
               )}
             </ActionIcon>
           </div>
