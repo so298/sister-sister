@@ -11,6 +11,22 @@ def save_json(obj, filepath: str):
         json.dump(obj, f, ensure_ascii=False)
 
 
+def get_info(city):
+    info = get_city_info(city['city_url'], name=city['city_name'])
+    print(info, file=sys.stderr)
+
+    sisters_info = []
+    for sister in city['sister']:
+        sis_info = get_city_info(
+            name=sister['city_name'], wiki_url=sister['city_url'])
+        sisters_info.append(sis_info)
+
+    return {
+        'city': info,
+        'sisters': sisters_info
+    }
+
+
 if __name__ == "__main__":
     cities = read_page_a(
         "https://en.wikipedia.org/wiki/List_of_twin_towns_and_sister_cities_in_Japan")
@@ -18,22 +34,8 @@ if __name__ == "__main__":
     results = []
 
     for i, city in enumerate(cities):
-        url = city['city_url']
-        name = city['city_name']
-        print_color_url(url)
-        info = get_city_info(city['city_url'], name=city['city_name'])
-        print(info, file=sys.stderr)
 
-        sisters_info = []
-        for sister in city['sister']:
-            sis_info = get_city_info(
-                name=sister['city_name'], wiki_url=sister['city_url'])
-            sisters_info.append(sis_info)
-
-        results.append({
-            'city': info,
-            'sisters': sisters_info
-        })
+        results.append(get_info(city))
 
         if i % 10 == 0:
             save_json(results, 'cache/japan_cities_temp.json')
