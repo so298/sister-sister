@@ -12,7 +12,8 @@ def save_json(obj, filepath: str):
 
 
 def get_info(city):
-    info = get_city_info(city['city_url'], name=city['city_name'])
+    info = get_city_info(
+        city['city_url'], name=city['city_name'], country='Japan')
     print(info, file=sys.stderr)
 
     sisters_info = []

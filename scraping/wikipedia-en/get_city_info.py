@@ -65,8 +65,32 @@ def get_abstract(soup: BeautifulSoup):
     return abst
 
 
-def get_japanese_info(soup: BeautifulSoup):
-    ...
+@cache
+def get_japanese_info(soup: BeautifulSoup, is_ja_pref=False):
+    ret = dict()
+
+    ja_elems = soup.find_all("small", string="dbpedia-ja")
+    for ja_elem in ja_elems:
+        ja_url = ja_elem.parent.get('href')
+        ja_soup = BeautifulSoup(requests.get(ja_url).content, 'html.parser')
+
+        pref = ja_soup.find(attrs={'property': 'prop-ja:都道府県'})
+        if is_ja_pref:
+            if pref:
+                ret['prefecture'] = pref.get_text()
+            else:
+                # 都道府県が確認できない場合、市区町村の記事でない可能性が高いのでスキップ
+                continue
+
+        name_ja = ja_soup.find(attrs={'property': 'prop-ja:name'})
+        if pref:
+            ret['nameJa'] = name_ja.get_text()
+
+        wiki_url_ja = ja_soup.find(attrs={'rel': 'foaf:isPrimaryTopicOf'})
+        if wiki_url_ja:
+            ret['urlJa'] = wiki_url_ja.get('href')
+
+    return ret
 
 
 @cache
@@ -87,7 +111,7 @@ def get_city_info(wiki_url: str, name: str, country=None):
 
     abst = get_abstract(soup)
 
-    return {
+    ret = {
         "nameEn": name,
         "nameJa": "",
         "position": {
@@ -102,6 +126,19 @@ def get_city_info(wiki_url: str, name: str, country=None):
         "population": population,
         "abstract": abst
     }
+
+    ja_info = None
+    ja_info = get_japanese_info(soup, is_ja_pref=(country == 'Japan'))
+
+    if ja_info:
+        if ja_info['urlJa']:
+            ret["wikiUrl"]['ja'] = ja_info["urlJa"]
+        if ja_info['nameJa']:
+            ret["nameJa"] = ja_info["nameJa"]
+        if ja_info['prefecture']:
+            ret['prefecture'] = ja_info["prefecture"]
+
+    return ret
 
 # info = (get_city_info("https://en.wikipedia.org/wiki/Akita_(city)", "Arita"))
 # print(info)
