@@ -131,11 +131,11 @@ def get_city_info(wiki_url: str, name: str, country=None):
     ja_info = get_japanese_info(soup, is_ja_pref=(country == 'Japan'))
 
     if ja_info:
-        if ja_info['urlJa']:
+        if 'urlJa' in ja_info.keys():
             ret["wikiUrl"]['ja'] = ja_info["urlJa"]
-        if ja_info['nameJa']:
+        if 'nameJa' in ja_info.keys():
             ret["nameJa"] = ja_info["nameJa"]
-        if ja_info['prefecture']:
+        if 'prefecture' in ja_info.keys():
             ret['prefecture'] = ja_info["prefecture"]
 
     return ret
