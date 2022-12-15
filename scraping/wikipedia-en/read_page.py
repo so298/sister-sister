@@ -10,7 +10,7 @@ import pathlib
 def get_full_wikipedia_url(subpath: str):
     return "https://en.wikipedia.org" + subpath
 
-def read_page_a(url: str):
+def read_page_a(url: str, print_log=False):
     soup = BeautifulSoup(requests.get(url).content, "html.parser")
     main_content = soup.find(attrs={"id": "mw-content-text"}).div
     city_name = None
@@ -46,7 +46,8 @@ def read_page_a(url: str):
             link = inner_soup.p.b.a
             city_name = link.text
             city_url = get_full_wikipedia_url(link.get('href'))
-            print(city_name, city_url, file=sys.stderr)
+            if print_log:
+                print(city_name, city_url, file=sys.stderr)
 
         elif ul != None:
             output.append({
