@@ -29,7 +29,6 @@ const useStyles = createStyles((theme) => ({
     fontSize: 3 * theme.spacing.xs,
     letterSpacing: theme.spacing.xs / 2,
   },
-  navbar: { position: 'sticky' },
 }));
 
 const scaleXRightCards = {
@@ -67,25 +66,23 @@ const MainPage: FC = () => {
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       navbar={
-        <Transition
-          mounted={controlPanelOpened}
-          transition={scaleXControlPanel}
-          duration={500}
-          timingFunction="ease"
+        <Navbar
+          zIndex={100}
+          fixed={true}
+          hiddenBreakpoint={theme.breakpoints.xl}
+          hidden={!controlPanelOpened}
+          width={{ sm: 300, lg: 300, md: 300 }}
         >
-          {(styles) => (
-            <div style={{ ...styles }}>
-              <Navbar
-                className={classes.navbar}
-                hiddenBreakpoint={theme.breakpoints.xl}
-                hidden={!controlPanelOpened}
-                width={{ sm: 300, lg: 300, md: 300 }}
-              >
-                <ControlPanelSection />
-              </Navbar>
-            </div>
-          )}
-        </Transition>
+          <Transition
+            mounted={controlPanelOpened}
+            transition={scaleXControlPanel}
+            duration={500}
+            timingFunction="ease"
+          >
+            {(styles) => <div style={{ ...styles }}></div>}
+          </Transition>
+          <ControlPanelSection />
+        </Navbar>
       }
       aside={
         <Aside
