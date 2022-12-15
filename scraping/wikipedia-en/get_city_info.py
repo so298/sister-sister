@@ -4,6 +4,8 @@ import pathlib
 import json
 from functools import cache
 
+from util import print_color_url
+
 
 def get_point(soup: BeautifulSoup):
     point = soup.find(attrs={"property": "georss:point"})
@@ -43,7 +45,11 @@ def get_area(soup: BeautifulSoup):
 def get_population(soup: BeautifulSoup):
     population = soup.find(attrs={"property": "dbp:populationTotal"})
     if population != None:
-        return int(population.get_text())
+        try:
+            val = int(population.get_text())
+            return val
+        except ValueError:
+            return None
 
     return None
 
@@ -59,10 +65,17 @@ def get_abstract(soup: BeautifulSoup):
     return abst
 
 
+def get_japanese_info(soup: BeautifulSoup):
+    ...
+
+
 @cache
 def get_city_info(wiki_url: str, name: str, country=None):
     name_with_country = pathlib.Path(wiki_url).name
     dbpedia_url = f"https://dbpedia.org/page/{name_with_country}"
+
+    print_color_url(dbpedia_url)
+
     res = requests.get(dbpedia_url)
     soup = BeautifulSoup(res.content, "html.parser")
     latitude, longtitude = get_point(soup)
