@@ -1,4 +1,4 @@
-import { Button, createStyles, Card, Text, Image } from '@mantine/core';
+import { Button, createStyles, Card, Text, Title, Image } from '@mantine/core';
 import { IconSearch } from '@tabler/icons';
 import { FC, useMemo, useEffect } from 'react';
 
@@ -21,6 +21,14 @@ const useStyles = createStyles((theme) => ({
     },
     visibility: 'visible',
     zIndex: 100,
+  },
+  wrapper: {
+    width: '100%',
+  },
+  selectedCityWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing.md,
   },
   item: {
     transition: 'box-shadow 150ms ease, transform 100ms ease',
@@ -65,26 +73,47 @@ const SearchControlPanel: FC = () => {
 
   return (
     <div className={classes.root}>
-      <Card className={classes.item} shadow="sm" radius="md" withBorder>
-        <Card.Section>
-          <Image src={sourceCityInfo.image} height={160} alt={sourceCityName} />
-        </Card.Section>
-        <Text pt="sm" pb="0" weight={500}>
-          {sourceCityName}
-        </Text>
-        <Text size="sm" color="dimmed">
-          {sourceCityInfo.description}
-        </Text>
-      </Card>
+      <div className={classes.wrapper}>
+        {sourceCityName ? (
+          <div className={classes.selectedCityWrapper}>
+            <Title order={1}>Selectd City</Title>
+            <Card className={classes.item} shadow="sm" radius="md" withBorder>
+              <Card.Section>
+                <Image
+                  src={
+                    typeof sourceCityInfo.image === undefined ||
+                    sourceCityInfo.image === ''
+                      ? 'noImage.png'
+                      : sourceCityInfo.image
+                  }
+                  height={160}
+                  alt={sourceCityName}
+                />
+              </Card.Section>
+              <Text pt="sm" pb="0" weight={500}>
+                {sourceCityName}
+              </Text>
+              <Text size="sm" color="dimmed">
+                {sourceCityInfo.description}
+              </Text>
+            </Card>
+          </div>
+        ) : (
+          <Title order={1}>Select City</Title>
+        )}
+      </div>
       <Button
         size="md"
         radius="md"
         color="blue"
-        disabled={!sourceCityName}
+        disabled={!sourceCityName || !sourceCityInfo.wikiUrl}
         leftIcon={<IconSearch />}
-        // onClick={onSearch}
+        component="a"
+        target="_blank"
+        rel="noopener noreferrer"
+        href={sourceCityInfo.wikiUrl}
       >
-        Search
+        Link to wiki
       </Button>
     </div>
   );
