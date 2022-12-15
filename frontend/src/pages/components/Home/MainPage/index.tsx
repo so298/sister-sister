@@ -18,9 +18,15 @@ import ControlPanelSection from './ControlPanelSection';
 import MapSection from './MapSection';
 import RightCardSection from './RightCardsSection';
 
-const useStyles = createStyles(() => ({
+const useStyles = createStyles((theme) => ({
   chevrons: { margin: '0 auto', alignItems: 'right' },
   aside: { overflow: 'auto' },
+  title: {
+    color: theme.colors.white[6],
+    fontWeight: 'bold',
+    fontSize: 3 * theme.spacing.xs,
+    letterSpacing: theme.spacing.xs / 2,
+  },
 }));
 
 const scaleXRightCards = {
@@ -123,7 +129,7 @@ const MainPage: FC = () => {
               />
             </MediaQuery>
 
-            <Text>Application header</Text>
+            <Text className={classes.title}>SISTER×SISTER</Text>
             <ActionIcon
               className={classes.chevrons}
               onClick={() =>
