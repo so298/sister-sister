@@ -1,13 +1,15 @@
-import { Button, createStyles } from '@mantine/core';
+import { Button, createStyles, Card, Text, Image } from '@mantine/core';
 import { IconSearch } from '@tabler/icons';
-import { FC, useCallback } from 'react';
+import { FC, useMemo, useEffect } from 'react';
 
 import dummyData from '../../../../../../data/dummyData.json';
+import undefinedData from '../../../../../../data/undefinedData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
 import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 
 const data: CityDataType[] = dummyData;
+const undefinedItem: CityDataType = undefinedData;
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -20,6 +22,15 @@ const useStyles = createStyles((theme) => ({
     visibility: 'visible',
     zIndex: 100,
   },
+  item: {
+    transition: 'box-shadow 150ms ease, transform 100ms ease',
+    width: '100%',
+
+    '&:hover': {
+      boxShadow: `${theme.shadows.md} !important`,
+      transform: 'scale(1.05)',
+    },
+  },
 }));
 
 const SearchControlPanel: FC = () => {
@@ -27,10 +38,21 @@ const SearchControlPanel: FC = () => {
   const { setSearching, sourceCityName, setTargetCityNames } =
     useSearchModeState();
 
-  const onSearch = useCallback(() => {
-    setSearching(true);
+  const sourceCityInfo: CityDataType = useMemo(() => {
+    let item: CityDataType = undefinedItem;
     if (sourceCityName !== undefined) {
-      // undefind to be 0
+      const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
+      if (typeof sourceCityIndex !== 'undefined') {
+        item = data[sourceCityIndex];
+      }
+    }
+    {
+      return item;
+    }
+  }, [sourceCityName]);
+
+  useEffect(() => {
+    if (sourceCityName !== undefined) {
       const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
       if (typeof sourceCityIndex !== 'undefined') {
         const sourceCityInfo: CityDataType = data[sourceCityIndex];
@@ -43,13 +65,24 @@ const SearchControlPanel: FC = () => {
 
   return (
     <div className={classes.root}>
+      <Card className={classes.item} shadow="sm" radius="md" withBorder>
+        <Card.Section>
+          <Image src={sourceCityInfo.image} height={160} alt={sourceCityName} />
+        </Card.Section>
+        <Text pt="sm" pb="0" weight={500}>
+          {sourceCityName}
+        </Text>
+        <Text size="sm" color="dimmed">
+          {sourceCityInfo.description}
+        </Text>
+      </Card>
       <Button
         size="md"
         radius="md"
         color="blue"
         disabled={!sourceCityName}
         leftIcon={<IconSearch />}
-        onClick={onSearch}
+        // onClick={onSearch}
       >
         Search
       </Button>
