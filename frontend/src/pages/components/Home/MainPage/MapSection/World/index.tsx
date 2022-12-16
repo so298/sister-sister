@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import { LatLngTuple } from 'leaflet';
-import React, { useRef, FC, useEffect, useMemo } from 'react';
+import React, { useRef, FC, useEffect, useMemo, useState } from 'react';
 
 import dummyData from '../../../../../../data/dummyData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
@@ -9,7 +9,6 @@ import {
   MouseEventType,
   ZoomEventType,
 } from '../../../../../static/types/eventTypes';
-import { geoJsonDataType } from '../../../../../static/types/geoJsonDataType';
 import { useWindowSize } from '../../../../../utils/GetWindowSize';
 import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
@@ -32,6 +31,10 @@ const World: FC = () => {
   const geoScale = 300;
 
   const position1: LatLngTuple = [137.7261111111, 34.7108333333];
+
+  const [geoData, setGeoData] = useState<unknown[]>([]);
+  const dataFetchDone = useRef(false);
+  const renderDone = useRef(false);
 
   const projection = d3
     .geoMercator()
@@ -76,148 +79,163 @@ const World: FC = () => {
     console.log({ sourceCityName });
   }, [sourceCityName]);
 
+  // load geo data
+  useEffect(() => {
+    if (!dataFetchDone.current) {
+      console.log("data fetch")
+      d3.json('./worldAndJapan.json').then((data: any) => {
+        setGeoData(() => {
+          console.log(data)
+          dataFetchDone.current = true;
+          return data;
+        });
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (
       Svg.current !== null &&
       Svg.current !== undefined &&
       G.current !== null &&
-      G.current !== undefined
+      G.current !== undefined &&
+      dataFetchDone.current
     ) {
       const svg = d3.select(Svg.current);
       const g = d3.select(G.current);
-      Promise.all([
-        //d3.json(worldGeoJsonUrl), // World shape
-        d3.json('/worldAndJapan.json'),
-        d3.csv('./data.csv'), // Position of circles
-      ]).then((initialize) => {
-        const worldGeo = initialize[0] as geoJsonDataType;
-        //const width = 1440; //1920;
-        //const height = 720; //1080;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const path: any = d3.geoPath().projection(projection);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const worldGeo = geoData as any;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const zoom: any = d3
-          .zoom()
-          .scaleExtent([1, ZOOM_EXTENT])
-          .on('zoom', zoomed);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const path: any = d3.geoPath().projection(projection);
 
-        svg
-          .attr('width', width)
-          .attr('height', height)
-          .attr('viewBox', [0, 0, width, height])
-          .on('click', reset);
-
-        const states = g
-          .attr('fill', '#444')
-          .attr('cursor', 'pointer')
-          .selectAll('path')
-          .data(worldGeo.features)
-          .join('path')
-          .on('click', clicked)
-          .attr('d', path);
-
-        g.append('path')
-          .attr('fill', 'none')
-          .attr('stroke', 'white')
-          .attr('stroke-linejoin', 'round');
-
-        g.selectAll('myPath')
-          .data(linkList)
-          .join('path')
-          .attr('d', (d) => path(d))
-          .style('fill', 'none')
-          .style('stroke', '#69b3a2')
-          .style('stroke-width', 2);
-
+      const reset = () => {
+        states.transition().style('fill', null);
+        if (svg.node() != null) {
+          const nodes = svg.node();
+          if (nodes) {
+            svg
+              .transition()
+              .duration(750)
+              .call(
+                zoom.transform,
+                d3.zoomIdentity,
+                d3.zoomTransform(nodes).invert([width / 2, height / 2]),
+              );
+            setSelectedCard(undefined);
+          } else {
+            console.error('error: no svg nodes exists');
+          }
+        }
         states.exit().remove();
         g.exit().remove();
+      };
 
-        const point1Projction = projection(position1);
-
-        if (point1Projction) {
-          // circle
-          g.selectAll('circle').remove();
-          g.selectAll('text').remove();
-
-          g.append('circle')
-            .attr('fill', '#0088DD')
-            .attr('stroke', 'white')
-            .attr('r', 2)
-            .attr('cx', point1Projction[0])
-            .attr('cy', point1Projction[1]);
-          // text
-          g.append('text')
-            .text('Hamamatsu')
-            .attr('font-size', 2)
-            .attr('x', point1Projction[0])
-            .attr('y', point1Projction[1] + 3);
+      const clicked = (event: MouseEventType, d: any) => {
+        const [[x0, y0], [x1, y1]] = path.bounds(d);
+        event.stopPropagation();
+        states.transition().style('fill', null);
+        d3.select(event.target).transition().style('fill', 'red');
+        // set sourceCity
+        if (d.properties.nam_ja !== undefined) {
+          setSourceCityName(d.properties.nam_ja);
         }
-
+        svg
+          .transition()
+          .duration(750)
+          .call(
+            zoom.transform,
+            d3.zoomIdentity
+              .translate(width / 2, height / 2)
+              .scale(
+                Math.min(
+                  ZOOM_EXTENT,
+                  0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height),
+                ),
+              )
+              .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
+            d3.pointer(event, svg.node()),
+          );
         svg.call(zoom);
+      };
 
-        function reset() {
-          states.transition().style('fill', null);
-          if (svg.node() != null) {
-            const nodes = svg.node();
-            if (nodes) {
-              svg
-                .transition()
-                .duration(750)
-                .call(
-                  zoom.transform,
-                  d3.zoomIdentity,
-                  d3.zoomTransform(nodes).invert([width / 2, height / 2]),
-                );
-              setSelectedCard(undefined);
-            } else {
-              console.error('error: no svg nodes exists');
-            }
-          }
-          states.exit().remove();
-          g.exit().remove();
-        }
+      const zoomed = (event: ZoomEventType) => {
+        const { transform } = event;
+        g.attr('transform', transform);
+        g.attr('stroke-width', 1 / transform.k);
+      };
 
-        function clicked(event: MouseEventType, d: any) {
-          const [[x0, y0], [x1, y1]] = path.bounds(d);
-          event.stopPropagation();
-          states.transition().style('fill', null);
-          d3.select(event.target).transition().style('fill', 'red');
-          // set sourceCity
-          if (d.properties.nam_ja !== undefined) {
-            setSourceCityName(d.properties.nam_ja);
-          }
-          svg
-            .transition()
-            .duration(750)
-            .call(
-              zoom.transform,
-              d3.zoomIdentity
-                .translate(width / 2, height / 2)
-                .scale(
-                  Math.min(
-                    ZOOM_EXTENT,
-                    0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height),
-                  ),
-                )
-                .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
-              d3.pointer(event, svg.node()),
-            );
-          svg.call(zoom);
-        }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const zoom: any = d3
+        .zoom()
+        .scaleExtent([1, ZOOM_EXTENT])
+        .on('zoom', zoomed);
 
-        function zoomed(event: ZoomEventType) {
-          const { transform } = event;
-          g.attr('transform', transform);
-          g.attr('stroke-width', 1 / transform.k);
-        }
+      svg
+        .attr('width', width)
+        .attr('height', height)
+        .attr('viewBox', [0, 0, width, height])
+        .on('click', reset);
 
-        return svg.node();
-      });
+      const states = g
+        .attr('fill', '#444')
+        .attr('cursor', 'pointer')
+        .selectAll('path')
+        .data(worldGeo.features)
+        .join('path')
+        .on('click', clicked)
+        .attr('d', path);
+
+      g.append('path')
+        .attr('fill', 'none')
+        .attr('stroke', 'white')
+        .attr('stroke-linejoin', 'round');
+
+      g.selectAll('myPath')
+        .data(linkList)
+        .join('path')
+        .attr('d', (d) => path(d))
+        .style('fill', 'none')
+        .style('stroke', '#69b3a2')
+        .style('stroke-width', 2);
+
+      states.exit().remove();
+      g.exit().remove();
+
+      const point1Projction = projection(position1);
+
+      if (point1Projction) {
+        // circle
+        g.selectAll('circle').remove();
+        g.selectAll('text').remove();
+
+        g.append('circle')
+          .attr('fill', '#0088DD')
+          .attr('stroke', 'white')
+          .attr('r', 2)
+          .attr('cx', point1Projction[0])
+          .attr('cy', point1Projction[1]);
+        // text
+        g.append('text')
+          .text('Hamamatsu')
+          .attr('font-size', 2)
+          .attr('x', point1Projction[0])
+          .attr('y', point1Projction[1] + 3);
+      }
+
+      svg.call(zoom);
     }
-    [Svg, G, linkList];
-  });
+  }, [
+    geoData,
+    height,
+    linkList,
+    position1,
+    projection,
+    setSelectedCard,
+    setSourceCityName,
+    width,
+  ]);
 
   useEffect(() => {
     if (
