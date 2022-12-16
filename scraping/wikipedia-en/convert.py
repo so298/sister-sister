@@ -23,6 +23,19 @@ def get_name(city):
     else:
         return 'unknown'
 
+def get_position(city):
+    if city['position']['latitude']:
+        return city['position']
+    return {
+        'latitude': 0,
+        'longtitude': 0
+    }
+
+def get_prefecture(city):
+    if 'prefecture' in city.keys():
+        return city['prefecture']
+    return 'No data'
+
 
 def get_wikiurl(city):
     if 'ja' in city['wikiUrl'].keys():
@@ -45,11 +58,13 @@ def parse_elem(elem: dict):
 
     converted['cityName'] = get_name(city)
     
-    converted['position'] = city['position']
+    converted['position'] = get_position(city)
     converted['country'] = 'Japan'
 
     if 'population' in keys:
         converted['population'] = city['population']
+
+    converted['prefecture'] = get_prefecture(city)
     
     converted['sisterCities'] = []
     converted['sisterCitiesId'] = []
@@ -68,8 +83,10 @@ def parse_sister(city):
 
     converted['cityName'] = get_name(city)
     
-    converted['position'] = city['position']
+    converted['position'] = get_position(city)
     converted['country'] = 'Japan'
+
+    converted['prefecture'] = get_prefecture(city)
 
     if 'population' in keys:
         converted['population'] = city['population']
