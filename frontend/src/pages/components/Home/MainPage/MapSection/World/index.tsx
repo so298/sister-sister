@@ -94,14 +94,7 @@ const World: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      Svg.current !== null &&
-      Svg.current !== undefined &&
-      G.current !== null &&
-      G.current !== undefined &&
-      dataFetchDone.current &&
-      !renderDone.current
-    ) {
+    if (dataFetchDone.current && !renderDone.current) {
       renderDone.current = true;
 
       const svg = d3.select(Svg.current);
