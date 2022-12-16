@@ -77,7 +77,8 @@ def parse_elem(elem: dict):
     converted['population'] = get_population(city)
 
     converted['prefecture'] = get_prefecture(city)
-    
+    converted['area'] = get_area(city)
+
     converted['sisterCities'] = []
     converted['sisterCitiesId'] = []
     for sister in sisters:
@@ -96,11 +97,12 @@ def parse_sister(city):
     converted['cityName'] = get_name(city)
     
     converted['position'] = get_position(city)
-    converted['country'] = 'Japan'
+    converted['country'] = 'No data'
 
     converted['prefecture'] = get_prefecture(city)
 
     converted['population'] = get_population(city)
+    converted['area'] = get_area(city)
     
     converted['sisterCities'] = []
     converted['sisterCitiesId'] = []
