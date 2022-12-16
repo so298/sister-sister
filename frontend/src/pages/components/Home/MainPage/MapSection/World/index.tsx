@@ -27,22 +27,45 @@ const World: FC = () => {
     setSelectedCard,
   } = useSearchModeState();
   const [width, height] = useWindowSize();
-  const geoCenter: LatLngTuple = [0, 0];
-  const geoScale = 300;
 
   const position1: LatLngTuple = [137.7261111111, 34.7108333333];
 
   const [geoData, setGeoData] = useState<unknown[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [geoPath, setGeoPath] = useState<any>(null);
   const dataFetchDone = useRef(false);
   const renderDone = useRef(false);
 
-  const projection = d3
-    .geoMercator()
-    .center(geoCenter)
-    .translate([width / 2, height / 2])
-    .scale(geoScale);
+  const svgElemRef = useRef<SVGSVGElement>(null);
+  const gElemRef = useRef<SVGGElement>(null);
+
+  const [svg, setSvg] = useState<any>(null);
+  const [g, setG] = useState<any>(null);
+  const [sisterPath, setSisterPath] = useState<any>(null);
+
+  useEffect(() => {
+    setSvg(d3.select(svgElemRef.current));
+    setG(d3.select(gElemRef.current));
+  }, []);
+
+  useEffect(() => {
+    if (g) {
+      setSisterPath(g.selectAll('sisterPath'));
+    }
+  }, [g]);
+
+  const projection = useMemo(() => {
+    const initialCenter: LatLngTuple = [0, 0];
+    const initialScale = 300;
+    return d3
+      .geoMercator()
+      .center(initialCenter)
+      .translate([width / 2, height / 2])
+      .scale(initialScale);
+  }, [width, height]);
 
   const linkList: CityLinkType[] = useMemo(() => {
+    console.log('link update');
     const link: CityLinkType[] = [];
     if (sourceCityName !== undefined) {
       const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
@@ -72,8 +95,10 @@ const World: FC = () => {
     return link;
   }, [targetCityNames]);
 
-  const Svg = useRef<SVGSVGElement>(null);
-  const G = useRef<SVGGElement>(null);
+  // set projection
+  useEffect(() => {
+    setGeoPath(() => d3.geoPath().projection(projection));
+  }, [projection]);
 
   useEffect(() => {
     console.log({ sourceCityName });
@@ -93,18 +118,16 @@ const World: FC = () => {
     }
   }, []);
 
+  // set topology data (called once initial)
   useEffect(() => {
-    if (dataFetchDone.current && !renderDone.current) {
+    if (dataFetchDone.current && !renderDone.current && geoPath && g && svg) {
       renderDone.current = true;
-
-      const svg = d3.select(Svg.current);
-      const g = d3.select(G.current);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const worldGeo = geoData as any;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const path: any = d3.geoPath().projection(projection);
+      const path = geoPath;
 
       const reset = () => {
         states.transition().style('fill', null);
@@ -188,14 +211,6 @@ const World: FC = () => {
         .attr('stroke', 'white')
         .attr('stroke-linejoin', 'round');
 
-      g.selectAll('myPath')
-        .data(linkList)
-        .join('path')
-        .attr('d', (d) => path(d))
-        .style('fill', 'none')
-        .style('stroke', '#69b3a2')
-        .style('stroke-width', 2);
-
       states.exit().remove();
       g.exit().remove();
 
@@ -223,26 +238,43 @@ const World: FC = () => {
       svg.call(zoom);
     }
   }, [
+    g,
     geoData,
+    geoPath,
     height,
     linkList,
     position1,
     projection,
     setSelectedCard,
     setSourceCityName,
+    svg,
     width,
   ]);
 
+  // draw sister sity path
+  useEffect(() => {
+    if (geoPath && sisterPath) {
+      sisterPath.remove();
+      sisterPath
+        .data(linkList)
+        .join('path')
+        .attr('d', (d: any) => geoPath(d))
+        .attr('class', 'update')
+        .style('fill', 'none')
+        .style('stroke', '#69b3a2')
+        .style('stroke-width', 2);
+      setSisterPath(sisterPath);
+    }
+  }, [geoPath, linkList]);
+
   useEffect(() => {
     if (
-      Svg.current !== null &&
-      Svg.current !== undefined &&
-      G.current !== null &&
-      G.current !== undefined &&
+      svgElemRef.current !== null &&
+      svgElemRef.current !== undefined &&
+      gElemRef.current !== null &&
+      gElemRef.current !== undefined &&
       selectedCard !== undefined
     ) {
-      const svg = d3.select(Svg.current);
-      const g = d3.select(G.current);
       const states = g
         .attr('fill', '#444')
         .attr('cursor', 'pointer')
@@ -284,8 +316,8 @@ const World: FC = () => {
 
   return (
     <>
-      <svg ref={Svg}>
-        <g ref={G} />
+      <svg ref={svgElemRef}>
+        <g ref={gElemRef} />
       </svg>
     </>
   );
