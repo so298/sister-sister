@@ -1,7 +1,7 @@
 import { Card, Image, Text, createStyles } from '@mantine/core';
 import { FC } from 'react';
 
-import { CityDataType } from '../../../../../../static/types/cityDataType';
+import { CityDataType } from '../../../static/types/cityDataType';
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -18,12 +18,12 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export type RightCardProps = Pick<
+export type CityCardProps = Pick<
   CityDataType,
   'image' | 'cityName' | 'description'
 >;
 
-const RightCard: FC<RightCardProps> = (props) => {
+const CityCard: FC<CityCardProps> = (props) => {
   const { classes } = useStyles();
   const { image, cityName, description } = props;
   return (
@@ -41,7 +41,6 @@ const RightCard: FC<RightCardProps> = (props) => {
         <Text pt="sm" pb="0" weight={500}>
           {cityName}
         </Text>
-
         <Text size="sm" color="dimmed">
           {description}
         </Text>
@@ -50,4 +49,4 @@ const RightCard: FC<RightCardProps> = (props) => {
   );
 };
 
-export default RightCard;
+export default CityCard;

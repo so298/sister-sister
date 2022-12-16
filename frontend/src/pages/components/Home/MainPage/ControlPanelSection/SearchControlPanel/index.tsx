@@ -1,4 +1,4 @@
-import { Button, createStyles, Card, Text, Title, Image } from '@mantine/core';
+import { Button, createStyles, Title } from '@mantine/core';
 import { IconSearch } from '@tabler/icons';
 import { FC, useMemo, useEffect } from 'react';
 
@@ -7,6 +7,7 @@ import undefinedData from '../../../../../../data/undefinedData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
 import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
+import CityCard from '../../../shared/CityCard';
 
 const data: CityDataType[] = dummyData;
 const undefinedItem: CityDataType = undefinedData;
@@ -30,15 +31,6 @@ const useStyles = createStyles((theme) => ({
     flexDirection: 'column',
     gap: theme.spacing.md,
   },
-  item: {
-    transition: 'box-shadow 150ms ease, transform 100ms ease',
-    width: '100%',
-
-    '&:hover': {
-      boxShadow: `${theme.shadows.md} !important`,
-      transform: 'scale(1.05)',
-    },
-  },
 }));
 
 const SearchControlPanel: FC = () => {
@@ -52,6 +44,8 @@ const SearchControlPanel: FC = () => {
       const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
       if (typeof sourceCityIndex !== 'undefined') {
         item = data[sourceCityIndex];
+      } else {
+        item.cityName = sourceCityName;
       }
     }
     {
@@ -77,26 +71,7 @@ const SearchControlPanel: FC = () => {
         {sourceCityName ? (
           <div className={classes.selectedCityWrapper}>
             <Title order={1}>Selectd City</Title>
-            <Card className={classes.item} shadow="sm" radius="md" withBorder>
-              <Card.Section>
-                <Image
-                  src={
-                    typeof sourceCityInfo.image === undefined ||
-                    sourceCityInfo.image === ''
-                      ? 'noImage.png'
-                      : sourceCityInfo.image
-                  }
-                  height={160}
-                  alt={sourceCityName}
-                />
-              </Card.Section>
-              <Text pt="sm" pb="0" weight={500}>
-                {sourceCityName}
-              </Text>
-              <Text size="sm" color="dimmed">
-                {sourceCityInfo.description}
-              </Text>
-            </Card>
+            <CityCard {...sourceCityInfo} />
           </div>
         ) : (
           <Title order={1}>Select City</Title>
