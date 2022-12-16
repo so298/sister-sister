@@ -180,7 +180,9 @@ const World: FC = () => {
           states.transition().style('fill', null);
           d3.select(event.target).transition().style('fill', 'red');
           // set sourceCity
-          setSourceCityName(d.properties.nam_ja);
+          if(d.properties.nam_ja !== undefined){
+            setSourceCityName(d.properties.nam_ja);
+          };
           svg
             .transition()
             .duration(750)

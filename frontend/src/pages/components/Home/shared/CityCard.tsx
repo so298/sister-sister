@@ -2,6 +2,7 @@ import { Card, Image, Text, createStyles } from '@mantine/core';
 import { FC } from 'react';
 
 import { CityDataType } from '../../../static/types/cityDataType';
+import { useSearchModeState } from '../Provider/hooks/useSearchModeState';
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -24,10 +25,19 @@ export type CityCardProps = Pick<
 >;
 
 const CityCard: FC<CityCardProps> = (props) => {
+  const { setSourceCityName, setSelectedCard } = useSearchModeState();
   const { classes } = useStyles();
   const { image, cityName, description } = props;
+
+  const onCityCardChange = (props: CityCardProps): void => {
+    const { cityName } = props;
+    setSourceCityName(cityName);
+    setSelectedCard(cityName)
+    console.log({ cityName });
+  };
+
   return (
-    <div className={classes.wrapper}>
+    <div className={classes.wrapper} onClick={() => onCityCardChange(props)}>
       <Card className={classes.item} shadow="sm" radius="md" withBorder>
         <Card.Section>
           <Image
