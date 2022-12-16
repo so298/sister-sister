@@ -37,9 +37,12 @@ const World: FC = () => {
   const svgElemRef = useRef<SVGSVGElement>(null);
   const gElemRef = useRef<SVGGElement>(null);
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [svg, setSvg] = useState<any>(null);
   const [g, setG] = useState<any>(null);
   const sisterPath = useRef<any>(null);
+  const statesRef = useRef<any>(null);
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   useEffect(() => {
     setSvg(d3.select(svgElemRef.current));
@@ -122,7 +125,7 @@ const World: FC = () => {
       const path = geoPath;
 
       const reset = () => {
-        states.transition().style('fill', null);
+        statesRef.current.transition().style('fill', null);
         if (svg.node() != null) {
           const nodes = svg.node();
           if (nodes) {
@@ -140,18 +143,14 @@ const World: FC = () => {
           }
         }
 
-        if (sisterPath.current) {
-          sisterPath.current.attr('opacity', 0);
-        }
-
-        states.exit().remove();
+        statesRef.current.exit().remove();
         g.exit().remove();
       };
 
       const clicked = (event: MouseEventType, d: any) => {
         const [[x0, y0], [x1, y1]] = path.bounds(d);
         event.stopPropagation();
-        states.transition().style('fill', null);
+        statesRef.current.transition().style('fill', null);
         d3.select(event.target).transition().style('fill', 'red');
         // set sourceCity
         if (d.properties.nam_ja !== undefined) {
@@ -194,7 +193,7 @@ const World: FC = () => {
         .attr('viewBox', [0, 0, width, height])
         .on('click', reset);
 
-      const states = g
+      statesRef.current = g
         .attr('fill', '#444')
         .attr('cursor', 'pointer')
         .selectAll('path')
@@ -208,7 +207,7 @@ const World: FC = () => {
         .attr('stroke', 'white')
         .attr('stroke-linejoin', 'round');
 
-      states.exit().remove();
+      statesRef.current.exit().remove();
       g.exit().remove();
 
       svg.call(zoom);
@@ -253,11 +252,6 @@ const World: FC = () => {
       gElemRef.current !== undefined &&
       selectedCard !== undefined
     ) {
-      const states = g
-        .attr('fill', '#444')
-        .attr('cursor', 'pointer')
-        .selectAll('path');
-
       const zoom: any = d3
         .zoom()
         .scaleExtent([1, ZOOM_EXTENT])
@@ -275,7 +269,7 @@ const World: FC = () => {
         : undefined;
 
       console.log(centerOfClicked);
-      states.transition().style('fill', null);
+      statesRef.current.transition().style('fill', null);
       centerOfClicked !== undefined &&
         centerOfClicked !== null &&
         svg
