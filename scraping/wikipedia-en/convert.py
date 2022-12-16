@@ -30,6 +30,13 @@ def get_wikiurl(city):
     else:
         return city['wikiUrl']['en']
 
+def get_description(city):
+    if 'ja' in city['abstract'].keys():
+        return city['abstract']['ja']
+    else:
+        return city['abstract']['en']
+
+
 def parse_elem(elem: dict):
     city = elem['city']
     sisters = elem['sisters']
@@ -49,6 +56,7 @@ def parse_elem(elem: dict):
         converted['sisterCities'].append(sister['wikiUrl']['en'])
 
     converted['wikiUrl'] = get_wikiurl(city)
+    converted['description'] = get_description(city)
 
     return converted
 
@@ -66,6 +74,7 @@ def parse_sister(city):
     
     converted['sisterCities'] = []
     converted['wikiUrl'] = get_wikiurl(city)
+    converted['description'] = get_description(city)
 
     return converted
 
@@ -98,4 +107,4 @@ converted_data = list(city_dict.values())
 print(f'city count: {len(converted_data)}', file=sys.stderr)
 
 with open(output, 'w') as f:
-    json.dump(converted_data, f)
+    json.dump(converted_data, f, ensure_ascii=False)
