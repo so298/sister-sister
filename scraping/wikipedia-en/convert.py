@@ -36,6 +36,19 @@ def get_prefecture(city):
         return city['prefecture']
     return 'No data'
 
+def get_population(city):
+    if 'population' in city.keys():
+        if city['population']:
+            return city['population']
+    
+    return 0
+
+def get_area(city):
+    if 'area' in city.keys():
+        if city['area']:
+            return city['area']
+    
+    return 0
 
 def get_wikiurl(city):
     if 'ja' in city['wikiUrl'].keys():
@@ -61,8 +74,7 @@ def parse_elem(elem: dict):
     converted['position'] = get_position(city)
     converted['country'] = 'Japan'
 
-    if 'population' in keys:
-        converted['population'] = city['population']
+    converted['population'] = get_population(city)
 
     converted['prefecture'] = get_prefecture(city)
     
@@ -88,8 +100,7 @@ def parse_sister(city):
 
     converted['prefecture'] = get_prefecture(city)
 
-    if 'population' in keys:
-        converted['population'] = city['population']
+    converted['population'] = get_population(city)
     
     converted['sisterCities'] = []
     converted['sisterCitiesId'] = []
