@@ -28,8 +28,6 @@ const World: FC = () => {
   } = useSearchModeState();
   const [width, height] = useWindowSize();
 
-  const position1: LatLngTuple = [137.7261111111, 34.7108333333];
-
   const [geoData, setGeoData] = useState<unknown[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [geoPath, setGeoPath] = useState<any>(null);
@@ -41,18 +39,12 @@ const World: FC = () => {
 
   const [svg, setSvg] = useState<any>(null);
   const [g, setG] = useState<any>(null);
-  const [sisterPath, setSisterPath] = useState<any>(null);
+  const sisterPath = useRef<any>(null);
 
   useEffect(() => {
     setSvg(d3.select(svgElemRef.current));
     setG(d3.select(gElemRef.current));
   }, []);
-
-  useEffect(() => {
-    if (g) {
-      setSisterPath(g.selectAll('sisterPath'));
-    }
-  }, [g]);
 
   const projection = useMemo(() => {
     const initialCenter: LatLngTuple = [0, 0];
@@ -147,6 +139,11 @@ const World: FC = () => {
             console.error('error: no svg nodes exists');
           }
         }
+
+        if (sisterPath.current) {
+          sisterPath.current.attr('opacity', 0);
+        }
+
         states.exit().remove();
         g.exit().remove();
       };
@@ -214,27 +211,6 @@ const World: FC = () => {
       states.exit().remove();
       g.exit().remove();
 
-      const point1Projction = projection(position1);
-
-      if (point1Projction) {
-        // circle
-        g.selectAll('circle').remove();
-        g.selectAll('text').remove();
-
-        g.append('circle')
-          .attr('fill', '#0088DD')
-          .attr('stroke', 'white')
-          .attr('r', 2)
-          .attr('cx', point1Projction[0])
-          .attr('cy', point1Projction[1]);
-        // text
-        g.append('text')
-          .text('Hamamatsu')
-          .attr('font-size', 2)
-          .attr('x', point1Projction[0])
-          .attr('y', point1Projction[1] + 3);
-      }
-
       svg.call(zoom);
     }
   }, [
@@ -243,7 +219,6 @@ const World: FC = () => {
     geoPath,
     height,
     linkList,
-    position1,
     projection,
     setSelectedCard,
     setSourceCityName,
@@ -253,17 +228,20 @@ const World: FC = () => {
 
   // draw sister sity path
   useEffect(() => {
-    if (geoPath && sisterPath) {
-      sisterPath.remove();
-      sisterPath
+    if (geoPath && g) {
+      if (!sisterPath.current) {
+        sisterPath.current = g.selectAll('sisterPath');
+      }
+
+      console.log('remove');
+      sisterPath.current = sisterPath.current
         .data(linkList)
         .join('path')
+        .attr('opacity', 1)
         .attr('d', (d: any) => geoPath(d))
-        .attr('class', 'update')
         .style('fill', 'none')
         .style('stroke', '#69b3a2')
         .style('stroke-width', 2);
-      setSisterPath(sisterPath);
     }
   }, [geoPath, linkList]);
 

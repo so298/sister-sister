@@ -11,7 +11,7 @@
   },
   {
     "cityName": "福岡県",
-    "position": { "latitude": 34, "longitude": 130 },
+    "position": { "latitude": 33, "longitude": 130 },
     "image": "/sampleImages/fukuoka.jpg",
     "country": "Japan",
     "population": 5117423,
@@ -27,7 +27,7 @@
   },
   {
     "cityName": "広島県",
-    "position": { "latitude": 33, "longitude": 130 },
+    "position": { "latitude": 35, "longitude": 133 },
     "image": "/sampleImages/fukuoka.jpg",
     "country": "Japan",
     "population": 5117423,
