@@ -82,10 +82,10 @@ const World: FC = () => {
   // load geo data
   useEffect(() => {
     if (!dataFetchDone.current) {
-      console.log("data fetch")
+      console.log('data fetch');
       d3.json('./worldAndJapan.json').then((data: any) => {
         setGeoData(() => {
-          console.log(data)
+          console.log(data);
           dataFetchDone.current = true;
           return data;
         });
@@ -99,8 +99,11 @@ const World: FC = () => {
       Svg.current !== undefined &&
       G.current !== null &&
       G.current !== undefined &&
-      dataFetchDone.current
+      dataFetchDone.current &&
+      !renderDone.current
     ) {
+      renderDone.current = true;
+
       const svg = d3.select(Svg.current);
       const g = d3.select(G.current);
 
