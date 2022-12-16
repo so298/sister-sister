@@ -52,8 +52,10 @@ def parse_elem(elem: dict):
         converted['population'] = city['population']
     
     converted['sisterCities'] = []
+    converted['sisterCitiesId'] = []
     for sister in sisters:
         converted['sisterCities'].append(sister['wikiUrl']['en'])
+        converted['sisterCitiesId'].append(sister['wikiUrl']['en'])
 
     converted['wikiUrl'] = get_wikiurl(city)
     converted['description'] = get_description(city)
@@ -73,6 +75,7 @@ def parse_sister(city):
         converted['population'] = city['population']
     
     converted['sisterCities'] = []
+    converted['sisterCitiesId'] = []
     converted['wikiUrl'] = get_wikiurl(city)
     converted['description'] = get_description(city)
 
@@ -99,7 +102,8 @@ for i, (_, city) in enumerate(city_dict.items()):
 # map sister id
 for _, (_, city) in enumerate(city_dict.items()):
     for i, url in enumerate(city['sisterCities']):
-        city['sisterCities'][i] = city_dict[url]['id']
+        city['sisterCitiesId'][i] = city_dict[url]['id']
+        city['sisterCities'][i] = city_dict[url]['cityName']
 
 # append data
 converted_data = list(city_dict.values())
