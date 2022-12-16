@@ -24,11 +24,10 @@ def get_name(city):
         return 'unknown'
 
 def get_position(city):
-    if city['position']['latitude']:
-        return city['position']
+    pos = city['position']
     return {
-        'latitude': 0,
-        'longtitude': 0
+        'latitude': pos['latitude'] or 0,
+        'longitude': pos['longtitude'] or 0
     }
 
 def get_prefecture(city):
