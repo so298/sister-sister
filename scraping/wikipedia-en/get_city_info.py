@@ -64,6 +64,12 @@ def get_abstract(soup: BeautifulSoup):
         abst['ja'] = abst_en.get_text()
     return abst
 
+def get_img_path(soup: BeautifulSoup):
+    img = soup.find("img", attrs={"alt": "thumbnail"})
+    if img:
+        return img.get("src")
+    return None
+
 def get_japanese_info(soup: BeautifulSoup, is_ja_pref=False):
     ret = dict()
 
@@ -110,6 +116,7 @@ def get_city_info(wiki_url: str, name: str, country: str | None=None):
     population = get_population(soup)
 
     abst = get_abstract(soup)
+    img = get_img_path(soup)
 
     ret = {
         "nameEn": name,
@@ -125,7 +132,8 @@ def get_city_info(wiki_url: str, name: str, country: str | None=None):
             "ja": None
         },
         "population": population,
-        "abstract": abst
+        "abstract": abst,
+        "image": img
     }
 
     ja_info = None

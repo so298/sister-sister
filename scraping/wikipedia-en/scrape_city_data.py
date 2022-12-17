@@ -33,6 +33,7 @@ class CityInfo:
             "ja": ""
         }
         self.prefecture = ""
+        self.image = ""
 
     def scrape_data(self):
         data = get_city_info(self.wiki_url['en'], self.name, self.country)
@@ -62,6 +63,9 @@ class CityInfo:
         if "prefecture" in data.keys():
             self.prefecture = data['prefecture']
         
+        if data["image"]:
+            self.image = data["image"]
+        
     def parse_format(self):
         wiki_url = self.wiki_url
         return deepcopy({
@@ -76,7 +80,8 @@ class CityInfo:
             "area": self.area,
             "wikiUrl": wiki_url['ja'] or wiki_url['en'],
             "wikiUrlEn": wiki_url['en'],
-            "description": self.abst
+            "description": self.abst,
+            "image": self.image
         })
 
 if __name__ == "__main__":
