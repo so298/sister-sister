@@ -1,17 +1,14 @@
-import { createStyles } from '@mantine/core';
+import { createStyles, Title } from '@mantine/core';
 import { FC, useMemo } from 'react';
 
 import dummyData from '../../../../../data/dummyData.json';
 import undefinedData from '../../../../../data/undefinedData.json';
 import { CityDataType } from '../../../../static/types/cityDataType';
 import cityNameIndexHash from '../../../../utils/cityNameIndexHash';
-import { useModeState } from '../../Provider/hooks/useModeState';
 import { useSearchModeState } from '../../Provider/hooks/useSearchModeState';
-
-import RightCard, { RightCardProps } from './elements/RightCard';
+import CityCard, { CityCardProps } from '../../shared/CityCard';
 
 const data: CityDataType[] = dummyData;
-const undefindItem: CityDataType = undefinedData;
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -20,26 +17,27 @@ const useStyles = createStyles((theme) => ({
     flexDirection: 'column',
     padding: theme.spacing.md,
     gap: theme.spacing.md,
-    justifyContent: 'start',
-    alignItems: 'center',
   },
 }));
 
 const RightCardSection: FC = () => {
-  const { mode } = useModeState();
   const { targetCityNames } = useSearchModeState();
 
   const { classes } = useStyles();
 
-  const cardItems: RightCardProps[] = useMemo(() => {
-    const items: RightCardProps[] = [];
+  const cardItems: CityCardProps[] = useMemo(() => {
+    const items: CityCardProps[] = [];
     targetCityNames?.forEach((d) => {
+      const undefinedItem: CityDataType = JSON.parse(
+        JSON.stringify(undefinedData),
+      );
+      undefinedItem.cityName = d;
       const targetCityIndex = cityNameIndexHash.get(d);
-      if (typeof targetCityIndex !== 'undefined') {
+      if (targetCityIndex !== undefined) {
         const targetCityInfo: CityDataType = data[targetCityIndex];
         items.push(targetCityInfo);
       } else {
-        items.push(undefindItem);
+        items.push(undefinedItem);
       }
     });
     {
@@ -49,8 +47,9 @@ const RightCardSection: FC = () => {
 
   return (
     <div className={classes.root}>
+      <Title>Sister Cities</Title>
       {[...cardItems].map((cardItem, i) => (
-        <RightCard {...cardItem} key={i} />
+        <CityCard {...cardItem} key={i} />
       ))}
     </div>
   );
