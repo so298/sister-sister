@@ -58,5 +58,6 @@ sis_graph = sis_graph_cp
 for node in sis_graph.values():
     node['sisters'] = list(node['sisters'])
 
+print(f"{len(sis_graph.keys())} city nodes", file=sys.stderr)
 with open("data/city_graph.json", "w") as f:
-    json.dump(sis_graph, f)
+    json.dump(list(sis_graph.values()), f)
