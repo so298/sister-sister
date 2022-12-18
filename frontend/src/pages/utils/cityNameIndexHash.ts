@@ -9,5 +9,5 @@ data.forEach((d, index) => {
   cityNameIndexHash.set(d.cityName, index);
 });
 
-console.log({ cityNameIndexHash });
+console.log({ cityNameIndexHash: cityNameIndexHash });
 export default cityNameIndexHash;

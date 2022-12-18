@@ -15,6 +15,7 @@ const undefinedItem: CityDataType = undefinedData;
 
 const useStyles = createStyles((theme) => ({
   root: {
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing.md,
@@ -24,19 +25,22 @@ const useStyles = createStyles((theme) => ({
     visibility: 'visible',
     zIndex: 100,
   },
-  wrapper: {
-    width: '100%',
-  },
   selectedCityWrapper: {
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing.md,
   },
+  textWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing.sm,
+  },
 }));
 
 const SearchControlPanel: FC = () => {
   const { classes } = useStyles();
-  const { sourceCityName, setTargetCityNames } = useSearchModeState();
+  const { sourceCountryPrefectureName, sourceCityName, setTargetCityNames } =
+    useSearchModeState();
 
   const sourceCityInfo: CityDataType = useMemo(() => {
     let item: CityDataType = undefinedItem;
@@ -67,29 +71,39 @@ const SearchControlPanel: FC = () => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.wrapper}>
-        {sourceCityName ? (
-          <div className={classes.selectedCityWrapper}>
-            <Title order={1}>Selectd City</Title>
-            <CityCard {...sourceCityInfo} />
-          </div>
-        ) : (
-          <Title order={1}>Select City</Title>
-        )}
-      </div>
-      <Button
-        size="md"
-        radius="md"
-        color="blue"
-        disabled={!sourceCityName || !sourceCityInfo.wikiUrl}
-        leftIcon={<IconSearch />}
-        component="a"
-        target="_blank"
-        rel="noopener noreferrer"
-        href={sourceCityInfo.wikiUrl}
-      >
-        Link to wiki
-      </Button>
+      {sourceCityName ? (
+        <div className={classes.selectedCityWrapper}>
+          <Title order={1} color="cyan">
+            Selectd City
+          </Title>
+          <CityCard {...sourceCityInfo} />
+          <Button
+            size="md"
+            radius="md"
+            color="cyan"
+            disabled={!sourceCityName || !sourceCityInfo.wikiUrl}
+            leftIcon={<IconSearch />}
+            component="a"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={sourceCityInfo.wikiUrl}
+          >
+            Link to wiki
+          </Button>
+        </div>
+      ) : sourceCountryPrefectureName ? (
+        <div className={classes.textWrapper}>
+          <Title order={3} color="cyan">
+            Selectd
+            <br />
+            Country or Prefecture
+          </Title>
+
+          <Title order={1}>{sourceCountryPrefectureName}</Title>
+        </div>
+      ) : (
+        <Title order={3}>Selectd Country</Title>
+      )}
     </div>
   );
 };

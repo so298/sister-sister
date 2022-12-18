@@ -5,6 +5,7 @@ import cityData from '../../../../../data/prodCityData.json';
 import undefinedData from '../../../../../data/undefinedData.json';
 import { CityDataType } from '../../../../static/types/cityDataType';
 import cityNameIndexHash from '../../../../utils/cityNameIndexHash';
+import countryPrefectureNameIndexHash from '../../../../utils/countryPrefectureNameIndexHash';
 import { useSearchModeState } from '../../Provider/hooks/useSearchModeState';
 import CityCard, { CityCardProps } from '../../shared/CityCard';
 
@@ -19,39 +20,74 @@ const useStyles = createStyles((theme) => ({
     padding: theme.spacing.md,
     gap: theme.spacing.md,
   },
+  textWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing.xs,
+  },
 }));
 
 const RightCardSection: FC = () => {
-  const { targetCityNames } = useSearchModeState();
-
+  const { sourceCountryPrefectureName, sourceCityName, targetCityNames } =
+    useSearchModeState();
   const { classes } = useStyles();
 
   const cardItems: CityCardProps[] = useMemo(() => {
     const items: CityCardProps[] = [];
-    targetCityNames?.forEach((d) => {
-      const undefinedItem: CityDataType = JSON.parse(
-        JSON.stringify(undefinedData),
-      );
-      undefinedItem.cityName = d;
-      const targetCityIndex = cityNameIndexHash.get(d);
-      if (targetCityIndex !== undefined) {
-        const targetCityInfo: CityDataType = data[targetCityIndex];
-        items.push(targetCityInfo);
-      } else {
-        items.push(undefinedItem);
+    console.log(sourceCountryPrefectureName);
+    if (sourceCountryPrefectureName && targetCityNames) {
+      targetCityNames?.forEach((d) => {
+        const undefinedItem: CityDataType = JSON.parse(
+          JSON.stringify(undefinedData),
+        );
+        undefinedItem.cityName = d;
+        const targetCityIndex = cityNameIndexHash.get(d);
+        if (targetCityIndex !== undefined) {
+          const targetCityInfo: CityDataType = data[targetCityIndex];
+          items.push(targetCityInfo);
+        } else {
+          items.push(undefinedItem);
+        }
+      });
+    } else if (sourceCountryPrefectureName && !targetCityNames) {
+      const inCountryPrefectureCityIndexList =
+        countryPrefectureNameIndexHash.get(sourceCountryPrefectureName);
+      if (inCountryPrefectureCityIndexList !== undefined) {
+        inCountryPrefectureCityIndexList.forEach((i) => {
+          const inCountryPrefectureCity = data[i];
+          items.push(inCountryPrefectureCity);
+        });
       }
-    });
+    }
     {
       return items;
     }
-  }, [targetCityNames]);
+  }, [sourceCountryPrefectureName, targetCityNames]);
 
   return (
     <div className={classes.root}>
-      <Title>Sister Cities</Title>
-      {[...cardItems].map((cardItem, i) => (
-        <CityCard {...cardItem} key={i} />
-      ))}
+      {targetCityNames && (
+        <>
+          <div className={classes.textWrapper}>
+            <Title color="cyan">Sister Cities of </Title>
+            <Title> {sourceCityName}</Title>
+          </div>
+          {[...cardItems].map((cardItem, i) => (
+            <CityCard {...cardItem} key={i} />
+          ))}
+        </>
+      )}
+      {!targetCityNames && (
+        <>
+          <div className={classes.textWrapper}>
+            <Title color="cyan">Cities in </Title>
+            <Title>{sourceCountryPrefectureName}</Title>
+          </div>
+          {[...cardItems].map((cardItem, i) => (
+            <CityCard {...cardItem} key={i} />
+          ))}
+        </>
+      )}
     </div>
   );
 };
