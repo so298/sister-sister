@@ -74,7 +74,7 @@ const SearchControlPanel: FC = () => {
       {sourceCityName ? (
         <div className={classes.selectedCityWrapper}>
           <Title order={1} color="cyan">
-            Selectd City
+            Selected City
           </Title>
           <CityCard {...sourceCityInfo} />
           <Button
@@ -94,7 +94,7 @@ const SearchControlPanel: FC = () => {
       ) : sourceCountryPrefectureName ? (
         <div className={classes.textWrapper}>
           <Title order={3} color="cyan">
-            Selectd
+            Selected
             <br />
             Country or Prefecture
           </Title>
@@ -102,7 +102,11 @@ const SearchControlPanel: FC = () => {
           <Title order={1}>{sourceCountryPrefectureName}</Title>
         </div>
       ) : (
-        <Title order={3}>Selectd Country</Title>
+        <Title order={3} color="cyan">
+          Select
+          <br />
+          Country or Prefecture
+        </Title>
       )}
     </div>
   );
