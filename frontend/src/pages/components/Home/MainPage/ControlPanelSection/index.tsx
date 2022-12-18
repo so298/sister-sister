@@ -17,6 +17,10 @@ const useStyles = createStyles((theme) => ({
       padding: theme.spacing.sm,
     },
   },
+  label: {
+    color: theme.colors.cyan[6],
+    fontWeight: 600,
+  },
 }));
 
 const ControlPanelSection: FC = () => {
@@ -33,6 +37,7 @@ const ControlPanelSection: FC = () => {
         searchable
         required
         onChange={onModeChange}
+        classNames={{ label: classes.label }}
         styles={(theme) => ({
           item: {
             // applies styles to selected item
