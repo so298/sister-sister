@@ -8,6 +8,7 @@ import SearchControlPanel from './SearchControlPanel';
 
 const useStyles = createStyles((theme) => ({
   root: {
+    width: '100%',
     position: 'absolute',
     display: 'flex',
     flexDirection: 'column',
@@ -17,7 +18,11 @@ const useStyles = createStyles((theme) => ({
       padding: theme.spacing.sm,
     },
   },
-  label: {
+  selectRoot: {
+    width: '100%',
+    maxWidth: '200px',
+  },
+  selectLabel: {
     color: theme.colors.cyan[6],
     fontWeight: 600,
   },
@@ -37,7 +42,7 @@ const ControlPanelSection: FC = () => {
         searchable
         required
         onChange={onModeChange}
-        classNames={{ label: classes.label }}
+        classNames={{ root: classes.selectRoot, label: classes.selectLabel }}
         styles={(theme) => ({
           item: {
             // applies styles to selected item
