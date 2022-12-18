@@ -53,6 +53,7 @@ const MainPage: FC = () => {
 
   useEffect(() => {
     sourceCountryPrefectureName && setRightCardOpened(true);
+    !sourceCountryPrefectureName && setRightCardOpened(false);
   }, [sourceCountryPrefectureName]);
 
   return (
@@ -71,7 +72,7 @@ const MainPage: FC = () => {
           fixed={true}
           hiddenBreakpoint={theme.breakpoints.xl}
           hidden={!controlPanelOpened}
-          width={{ sm: 300, lg: 300, md: 300 }}
+          width={{ lg: 400 }}
         >
           <Transition
             mounted={controlPanelOpened}
@@ -89,7 +90,7 @@ const MainPage: FC = () => {
           className={classes.aside}
           hiddenBreakpoint={theme.breakpoints.xl}
           hidden={!rightCardOpend}
-          width={{ sm: 300, lg: 400 }}
+          width={{ lg: 400 }}
         >
           <Transition
             mounted={rightCardOpend}

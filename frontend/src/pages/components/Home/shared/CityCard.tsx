@@ -17,18 +17,35 @@ const useStyles = createStyles((theme) => ({
   wrapper: {
     width: '100%',
   },
+  descriptionWrapper: {
+    width: '100%',
+    maxHeight: '20vh',
+    overflow: 'auto',
+  },
 }));
 
 export type CityCardProps = Pick<
   CityDataType,
-  'image' | 'cityName' | 'description' | 'country' | 'prefecture'
+  | 'image'
+  | 'cityName'
+  | 'description'
+  | 'country'
+  | 'prefecture'
+  | 'area'
+  | 'population'
+  | 'wikiUrl'
 >;
 
 const CityCard: FC<CityCardProps> = (props) => {
-  const { setSourceCountryPrefectureName, setSourceCityName, setSelectedCard } =
-    useSearchModeState();
+  const {
+    setSourceCountryPrefectureName,
+    setSourceCityName,
+    setSelectedCard,
+    setHoveredCard,
+  } = useSearchModeState();
   const { classes } = useStyles();
-  const { image, cityName, description } = props;
+  const { image, cityName, description, area, population, wikiUrl, country } =
+    props;
 
   const onCityCardChange = (props: CityCardProps): void => {
     const { cityName, country, prefecture } = props;
@@ -42,8 +59,24 @@ const CityCard: FC<CityCardProps> = (props) => {
     console.log({ cityName });
   };
 
+  const onCityCardHovered = (props: CityCardProps): void => {
+    const { cityName } = props;
+    if (typeof cityName !== 'undefined') {
+      setHoveredCard(cityName);
+    }
+  };
+
+  const onCityCardLeave = () => {
+    setHoveredCard(undefined);
+  };
+
   return (
-    <div className={classes.wrapper} onClick={() => onCityCardChange(props)}>
+    <div
+      className={classes.wrapper}
+      onClick={() => onCityCardChange(props)}
+      onMouseOver={() => onCityCardHovered(props)}
+      onMouseLeave={() => onCityCardLeave()}
+    >
       <Card className={classes.item} shadow="sm" radius="md" withBorder>
         <Card.Section>
           <Image
@@ -58,8 +91,40 @@ const CityCard: FC<CityCardProps> = (props) => {
           {cityName}
         </Text>
         <Text size="sm" color="dimmed">
-          {description}
+          国 : {country}
         </Text>
+        {population == 0 ? (
+          <Text size="sm" color="dimmed">
+            人口 : No Data
+          </Text>
+        ) : (
+          <Text size="sm" color="dimmed">
+            人口 :{' '}
+            {Number(
+              Number(population?.toPrecision(3)).toFixed(0),
+            ).toLocaleString()}{' '}
+            人
+          </Text>
+        )}
+        {area == 0 ? (
+          <Text size="sm" color="dimmed">
+            面積 : No Data
+          </Text>
+        ) : (
+          <Text size="sm" color="dimmed">
+            面積 :{' '}
+            {Number(Number(area?.toPrecision(3)).toFixed(0)).toLocaleString()}{' '}
+            km2
+          </Text>
+        )}
+        <Text size="sm" color="dimmed">
+          概要 :
+        </Text>
+        <div className={classes.descriptionWrapper}>
+          <Text size="sm" color="dimmed">
+            {description}
+          </Text>
+        </div>
       </Card>
     </div>
   );
