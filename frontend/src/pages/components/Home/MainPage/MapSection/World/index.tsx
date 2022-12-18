@@ -142,6 +142,8 @@ const World: FC = () => {
                 d3.zoomIdentity,
                 d3.zoomTransform(nodes).invert([width / 2, height / 2]),
               );
+            setSourceCountryPrefectureName(undefined);
+            setSourceCityName(undefined);
             setSelectedCard(undefined);
           } else {
             console.error('error: no svg nodes exists');
@@ -173,7 +175,7 @@ const World: FC = () => {
               .scale(
                 Math.min(
                   ZOOM_EXTENT,
-                  0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height),
+                  0.5 / Math.max((x1 - x0) / width, (y1 - y0) / height),
                 ),
               )
               .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
