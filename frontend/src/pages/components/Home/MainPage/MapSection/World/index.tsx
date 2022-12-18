@@ -357,17 +357,6 @@ const World: FC = () => {
           ])
         : undefined;
       console.log(sourceCityName);
-      centerOfHovered !== undefined &&
-        centerOfHovered !== null &&
-        centerOfSource !== undefined &&
-        centerOfSource !== null &&
-        console.log(
-          0.5 /
-            Math.max(
-              (Math.abs(centerOfHovered[0] - centerOfSource[0]) / width,
-              Math.abs(centerOfHovered[1] - centerOfSource[1]) / height),
-            ),
-        );
 
       centerOfHovered !== undefined &&
         centerOfHovered !== null &&
@@ -384,12 +373,12 @@ const World: FC = () => {
               .scale(
                 Math.min(
                   ZOOM_EXTENT,
-                  0.2 /
-                    Math.max(
-                      (Math.abs(centerOfHovered[0] - centerOfSource[0]) / width,
-                      Math.abs(centerOfHovered[1] - centerOfSource[1]) /
-                        height),
-                    ),
+                  Math.min(
+                    (0.4 / Math.abs(centerOfHovered[0] - centerOfSource[0])) *
+                      width,
+                    (0.4 / Math.abs(centerOfHovered[1] - centerOfSource[1])) *
+                      height,
+                  ),
                 ),
               )
               .translate(
