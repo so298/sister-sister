@@ -21,18 +21,24 @@ const useStyles = createStyles((theme) => ({
 
 export type CityCardProps = Pick<
   CityDataType,
-  'image' | 'cityName' | 'description'
+  'image' | 'cityName' | 'description' | 'country' | 'prefecture'
 >;
 
 const CityCard: FC<CityCardProps> = (props) => {
-  const { setSourceCityName, setSelectedCard } = useSearchModeState();
+  const { setSourceCountryPrefectureName, setSourceCityName, setSelectedCard } =
+    useSearchModeState();
   const { classes } = useStyles();
   const { image, cityName, description } = props;
 
   const onCityCardChange = (props: CityCardProps): void => {
-    const { cityName } = props;
+    const { cityName, country, prefecture } = props;
+    if (country === 'Japan') {
+      setSourceCountryPrefectureName(prefecture);
+    } else {
+      setSourceCountryPrefectureName(country);
+    }
     setSourceCityName(cityName);
-    setSelectedCard(cityName)
+    setSelectedCard(cityName);
     console.log({ cityName });
   };
 

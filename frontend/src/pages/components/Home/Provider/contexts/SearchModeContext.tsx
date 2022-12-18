@@ -1,8 +1,8 @@
 import { createContext, ReactNode, FC, useState } from 'react';
 
 export type SearchModeState = {
-  searching: boolean;
-  setSearching: (value: boolean) => void;
+  sourceCountryPrefectureName: string | undefined;
+  setSourceCountryPrefectureName: (value: string | undefined) => void;
   sourceCityName: string | undefined;
   setSourceCityName: (value: string | undefined) => void;
   targetCityNames: string[] | undefined;
@@ -25,20 +25,23 @@ export const SearchModeStateProvider: FC<SearchModeStateProviderProps> = (
 ) => {
   const { children } = props;
 
-  const [searching, setSearching] = useState<boolean>(false);
+  const [sourceCountryPrefectureName, setSourceCountryPrefectureName] =
+    useState<string | undefined>(undefined);
   const [sourceCityName, setSourceCityName] = useState<string | undefined>(
     undefined,
   );
   const [targetCityNames, setTargetCityNames] = useState<string[] | undefined>(
     undefined,
   );
-  const [selectedCard, setSelectedCard] = useState<string | undefined>(undefined);
+  const [selectedCard, setSelectedCard] = useState<string | undefined>(
+    undefined,
+  );
 
   return (
     <Provider
       value={{
-        searching,
-        setSearching,
+        sourceCountryPrefectureName,
+        setSourceCountryPrefectureName,
         sourceCityName,
         setSourceCityName,
         targetCityNames,

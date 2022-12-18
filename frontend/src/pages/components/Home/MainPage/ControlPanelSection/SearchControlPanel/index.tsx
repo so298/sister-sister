@@ -2,18 +2,20 @@ import { Button, createStyles, Title } from '@mantine/core';
 import { IconSearch } from '@tabler/icons';
 import { FC, useMemo, useEffect } from 'react';
 
-import cityData from '../../../../../../data/cityData.json';
+import cityData from '../../../../../../data/prodCityData.json';
 import undefinedData from '../../../../../../data/undefinedData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
 import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 import CityCard from '../../../shared/CityCard';
 
-const data: CityDataType[] = cityData;
+const dataObject: any = cityData;
+const data: CityDataType[] = dataObject;
 const undefinedItem: CityDataType = undefinedData;
 
 const useStyles = createStyles((theme) => ({
   root: {
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing.md,
@@ -23,19 +25,21 @@ const useStyles = createStyles((theme) => ({
     visibility: 'visible',
     zIndex: 100,
   },
-  wrapper: {
-    width: '100%',
-  },
   selectedCityWrapper: {
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing.md,
   },
+  textWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing.sm,
+  },
 }));
 
 const SearchControlPanel: FC = () => {
   const { classes } = useStyles();
-  const { setSearching, sourceCityName, setTargetCityNames } =
+  const { sourceCountryPrefectureName, sourceCityName, setTargetCityNames } =
     useSearchModeState();
 
   const sourceCityInfo: CityDataType = useMemo(() => {
@@ -63,33 +67,43 @@ const SearchControlPanel: FC = () => {
         setTargetCityNames([]);
       }
     }
-  }, [setSearching, sourceCityName, setTargetCityNames]);
+  }, [sourceCityName, setTargetCityNames]);
 
   return (
     <div className={classes.root}>
-      <div className={classes.wrapper}>
-        {sourceCityName ? (
-          <div className={classes.selectedCityWrapper}>
-            <Title order={1}>Selectd City</Title>
-            <CityCard {...sourceCityInfo} />
-          </div>
-        ) : (
-          <Title order={1}>Select City</Title>
-        )}
-      </div>
-      <Button
-        size="md"
-        radius="md"
-        color="blue"
-        disabled={!sourceCityName || !sourceCityInfo.wikiUrl}
-        leftIcon={<IconSearch />}
-        component="a"
-        target="_blank"
-        rel="noopener noreferrer"
-        href={sourceCityInfo.wikiUrl}
-      >
-        Link to wiki
-      </Button>
+      {sourceCityName ? (
+        <div className={classes.selectedCityWrapper}>
+          <Title order={1} color="cyan">
+            Selectd City
+          </Title>
+          <CityCard {...sourceCityInfo} />
+          <Button
+            size="md"
+            radius="md"
+            color="cyan"
+            disabled={!sourceCityName || !sourceCityInfo.wikiUrl}
+            leftIcon={<IconSearch />}
+            component="a"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={sourceCityInfo.wikiUrl}
+          >
+            Link to wiki
+          </Button>
+        </div>
+      ) : sourceCountryPrefectureName ? (
+        <div className={classes.textWrapper}>
+          <Title order={3} color="cyan">
+            Selectd
+            <br />
+            Country or Prefecture
+          </Title>
+
+          <Title order={1}>{sourceCountryPrefectureName}</Title>
+        </div>
+      ) : (
+        <Title order={3}>Selectd Country</Title>
+      )}
     </div>
   );
 };

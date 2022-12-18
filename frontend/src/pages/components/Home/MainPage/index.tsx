@@ -49,11 +49,11 @@ const MainPage: FC = () => {
   const { classes } = useStyles();
   const [controlPanelOpened, setControlPanelOpened] = useState<boolean>(true);
   const [rightCardOpend, setRightCardOpened] = useState<boolean>(false);
-  const { targetCityNames } = useSearchModeState();
+  const { sourceCountryPrefectureName } = useSearchModeState();
 
   useEffect(() => {
-    targetCityNames && setRightCardOpened(true);
-  }, [targetCityNames]);
+    sourceCountryPrefectureName && setRightCardOpened(true);
+  }, [sourceCountryPrefectureName]);
 
   return (
     <AppShell

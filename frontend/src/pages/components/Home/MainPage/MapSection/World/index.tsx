@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { LatLngTuple } from 'leaflet';
 import React, { useRef, FC, useEffect, useMemo, useState } from 'react';
 
-import cityData from '../../../../../../data/cityData.json';
+import cityData from '../../../../../../data/prodCityData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
 import { CityLinkType } from '../../../../../static/types/cityLinkType';
 import {
@@ -14,15 +14,19 @@ import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 // import { worldGeoJsonUrl } from '../../../../../static/urls';
 
-const data: CityDataType[] = cityData;
+const dataObject: any = cityData;
+const data: CityDataType[] = dataObject;
 
 const ZOOM_EXTENT = 20;
 
 const World: FC = () => {
   const {
+    sourceCountryPrefectureName,
+    setSourceCountryPrefectureName,
     sourceCityName,
     setSourceCityName,
     targetCityNames,
+    setTargetCityNames,
     selectedCard,
     setSelectedCard,
   } = useSearchModeState();
@@ -42,6 +46,7 @@ const World: FC = () => {
   const [g, setG] = useState<any>(null);
   const sisterPath = useRef<any>(null);
   const statesRef = useRef<any>(null);
+  const cityPins = useRef<any>(null);
   /* eslint-enable @typescript-eslint/no-explicit-any */
 
   useEffect(() => {
@@ -153,8 +158,10 @@ const World: FC = () => {
         statesRef.current.transition().style('fill', null);
         d3.select(event.target).transition().style('fill', 'red');
         // set sourceCity
-        if (d.properties.nam_ja !== undefined) {
-          setSourceCityName(d.properties.nam_ja);
+        if (d.properties.name !== undefined) {
+          setSourceCountryPrefectureName(d.properties.name);
+          setSourceCityName(undefined);
+          setTargetCityNames(undefined);
         }
         svg
           .transition()
@@ -220,7 +227,9 @@ const World: FC = () => {
     linkList,
     projection,
     setSelectedCard,
+    setSourceCountryPrefectureName,
     setSourceCityName,
+    setTargetCityNames,
     svg,
     width,
   ]);
@@ -243,6 +252,27 @@ const World: FC = () => {
         .style('stroke-width', 2);
     }
   }, [geoPath, linkList]);
+
+  const point1 = projection([137, 45]);
+
+  // city pin
+  useEffect(() => {
+    if (geoPath && g) {
+      if (!cityPins.current) {
+        cityPins.current = g.selectAll('cityPins');
+      }
+      if (point1) {
+        console.log({ sourceCountryPrefectureName });
+        cityPins.current = cityPins.current
+          .append('circle')
+          .attr('fill', '#0088DD')
+          .attr('stroke', 'white')
+          .attr('r', 100)
+          .attr('cx', point1[0])
+          .attr('cy', point1[1]);
+      }
+    }
+  }, [sourceCountryPrefectureName]);
 
   useEffect(() => {
     if (
