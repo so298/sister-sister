@@ -46,5 +46,16 @@ with open("data/city_data_all.json") as f:
     data = json.load(f)
 
 for i, city in enumerate(data):
-    if city['cityName'] in name_map.keys():
-        city['cityName']
+    city_name = city['cityName'][:]
+    if city_name in name_map.keys():
+        city['cityName'] = name_map[city_name]
+    
+    for j, sister in enumerate(city['sisterCities']):
+        if sister in name_map.keys():
+            city['sisterCities'][j] = name_map[sister]
+    
+    if city_name in pref_map.keys():
+        city['prefecture'] = pref_map[city_name]
+
+with open("data/city_data_all.json", "w") as f:
+    json.dump(data, f)
