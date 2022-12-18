@@ -50,19 +50,26 @@ def read_page_a(url: str, print_log=False):
                 print(city_name, city_url, file=sys.stderr)
 
         elif ul != None:
+            sis_list = []
+            for tag in inner_soup.find_all('ul'):
+                sis_list.extend(parse_ul(tag))
+
             output.append({
                 "city_name": city_name,
                 "city_url": city_url,
-                "sister": parse_ul(inner_soup.ul)
+                "sister": sis_list
             })
 
         elif div != None:
             if not div.get("class") or not "div-col" in div.get("class"):
                 continue
+            sis_list = []
+            for tag in inner_soup.div.find_all('ul'):
+                sis_list.extend(parse_ul(tag))
             output.append({
                 "city_name": city_name,
                 "city_url": city_url,
-                "sister": parse_ul(inner_soup.div.ul)
+                "sister": sis_list
             })
 
     return output

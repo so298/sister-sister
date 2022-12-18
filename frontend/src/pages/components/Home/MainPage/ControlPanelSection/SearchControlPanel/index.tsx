@@ -2,14 +2,14 @@ import { Button, createStyles, Title } from '@mantine/core';
 import { IconSearch } from '@tabler/icons';
 import { FC, useMemo, useEffect } from 'react';
 
-import dummyData from '../../../../../../data/dummyData.json';
+import cityData from '../../../../../../data/cityData.json';
 import undefinedData from '../../../../../../data/undefinedData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
 import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 import CityCard from '../../../shared/CityCard';
 
-const data: CityDataType[] = dummyData;
+const data: CityDataType[] = cityData;
 const undefinedItem: CityDataType = undefinedData;
 
 const useStyles = createStyles((theme) => ({

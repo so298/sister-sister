@@ -55,7 +55,7 @@ def get_population(soup: BeautifulSoup):
 
 
 def get_abstract(soup: BeautifulSoup):
-    abst = dict()
+    abst = {'ja': None, 'en': None}
     abst_en = soup.find(attrs={'property': 'dbo:abstract', 'lang': 'en'})
     if abst_en:
         abst['en'] = abst_en.get_text()
@@ -64,8 +64,12 @@ def get_abstract(soup: BeautifulSoup):
         abst['ja'] = abst_en.get_text()
     return abst
 
+def get_img_path(soup: BeautifulSoup):
+    img = soup.find("img", attrs={"alt": "thumbnail"})
+    if img:
+        return img.get("src")
+    return None
 
-@cache
 def get_japanese_info(soup: BeautifulSoup, is_ja_pref=False):
     ret = dict()
 
@@ -89,12 +93,14 @@ def get_japanese_info(soup: BeautifulSoup, is_ja_pref=False):
         wiki_url_ja = ja_soup.find(attrs={'rel': 'foaf:isPrimaryTopicOf'})
         if wiki_url_ja:
             ret['urlJa'] = wiki_url_ja.get('href')
+        
+        abst_ja = ja_soup.find(attrs={"property": "dbo:abstract"})
+        if abst_ja:
+            ret['abstract'] = abst_ja.get_text()
 
     return ret
 
-
-@cache
-def get_city_info(wiki_url: str, name: str, country=None):
+def get_city_info(wiki_url: str, name: str, country: str | None=None):
     name_with_country = pathlib.Path(wiki_url).name
     dbpedia_url = f"https://dbpedia.org/page/{name_with_country}"
 
@@ -110,21 +116,24 @@ def get_city_info(wiki_url: str, name: str, country=None):
     population = get_population(soup)
 
     abst = get_abstract(soup)
+    img = get_img_path(soup)
 
     ret = {
         "nameEn": name,
         "nameJa": "",
         "position": {
             "latitude": latitude,
-            "longtitude": longtitude,
+            "longitude": longtitude,
         },
         "country": country,
         "area": area,
         "wikiUrl": {
             "en": wiki_url,
+            "ja": None
         },
         "population": population,
-        "abstract": abst
+        "abstract": abst,
+        "image": img
     }
 
     ja_info = None
@@ -137,6 +146,8 @@ def get_city_info(wiki_url: str, name: str, country=None):
             ret["nameJa"] = ja_info["nameJa"]
         if 'prefecture' in ja_info.keys():
             ret['prefecture'] = ja_info["prefecture"]
+        if 'abstract' in ja_info.keys():
+            ret['abstract']['ja'] = ja_info['abstract']
 
     return ret
 

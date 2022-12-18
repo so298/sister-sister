@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { LatLngTuple } from 'leaflet';
 import React, { useRef, FC, useEffect, useMemo, useState } from 'react';
 
-import dummyData from '../../../../../../data/dummyData.json';
+import cityData from '../../../../../../data/cityData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
 import { CityLinkType } from '../../../../../static/types/cityLinkType';
 import {
@@ -14,7 +14,7 @@ import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 // import { worldGeoJsonUrl } from '../../../../../static/urls';
 
-const data: CityDataType[] = dummyData;
+const data: CityDataType[] = cityData;
 
 const ZOOM_EXTENT = 20;
 
