@@ -53,6 +53,7 @@ const MainPage: FC = () => {
 
   useEffect(() => {
     sourceCountryPrefectureName && setRightCardOpened(true);
+    !sourceCountryPrefectureName && setRightCardOpened(false);
   }, [sourceCountryPrefectureName]);
 
   return (
