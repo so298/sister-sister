@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 import pathlib
 from urllib.parse import urlparse
+from time import sleep
 
 from util import parse_float, parse_int
 from get_city_info import get_city_info
