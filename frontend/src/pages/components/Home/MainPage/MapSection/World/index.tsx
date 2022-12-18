@@ -29,6 +29,7 @@ const World: FC = () => {
     setTargetCityNames,
     selectedCard,
     setSelectedCard,
+    hoveredCard,
   } = useSearchModeState();
   const [width, height] = useWindowSize();
 
@@ -173,7 +174,7 @@ const World: FC = () => {
               .scale(
                 Math.min(
                   ZOOM_EXTENT,
-                  0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height),
+                  0.5 / Math.max((x1 - x0) / width, (y1 - y0) / height),
                 ),
               )
               .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
@@ -282,6 +283,7 @@ const World: FC = () => {
       gElemRef.current !== undefined &&
       selectedCard !== undefined
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const zoom: any = d3
         .zoom()
         .scaleExtent([1, ZOOM_EXTENT])
@@ -298,7 +300,7 @@ const World: FC = () => {
           ])
         : undefined;
 
-      console.log(centerOfClicked);
+      //console.log(centerOfClicked);
       statesRef.current.transition().style('fill', null);
       centerOfClicked !== undefined &&
         centerOfClicked !== null &&
@@ -315,6 +317,70 @@ const World: FC = () => {
       svg.call(zoom);
     }
   }, [selectedCard]);
+
+  useEffect(() => {
+    console.log(hoveredCard);
+    if (
+      svgElemRef.current !== null &&
+      svgElemRef.current !== undefined &&
+      gElemRef.current !== null &&
+      gElemRef.current !== undefined &&
+      hoveredCard !== null &&
+      hoveredCard !== undefined &&
+      sourceCityName !== null &&
+      sourceCityName !== undefined
+    ) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const zoom: any = d3
+        .zoom()
+        .scaleExtent([1, ZOOM_EXTENT])
+        .on('zoom', (event: ZoomEventType) => {
+          const { transform } = event;
+          g.attr('transform', transform);
+          g.attr('stroke-width', 1 / transform.k);
+        });
+      const centerOfHoveredIndex = cityNameIndexHash.get(hoveredCard);
+      const centerOfHovered = centerOfHoveredIndex
+        ? projection([
+            data[centerOfHoveredIndex].position.longitude,
+            data[centerOfHoveredIndex].position.latitude,
+          ])
+        : undefined;
+
+      const centerOfSourceIndex = cityNameIndexHash.get(sourceCityName);
+      const centerOfSource = centerOfSourceIndex
+        ? projection([
+            data[centerOfSourceIndex].position.longitude,
+            data[centerOfSourceIndex].position.latitude,
+          ])
+        : undefined;
+
+      centerOfHovered !== undefined &&
+        centerOfHovered !== null &&
+        centerOfSource !== undefined &&
+        centerOfSource !== null &&
+        svg
+          .transition()
+          .duration(750)
+          .call(
+            zoom.transform,
+            d3.zoomIdentity
+              .translate(width / 2, height / 2)
+              .scale(
+                0.5 /
+                  Math.max(
+                    (Math.abs(centerOfHovered[0] - centerOfSource[0]) / width,
+                    Math.abs(centerOfHovered[1] - centerOfSource[1]) / height),
+                  ),
+              )
+              .translate(
+                -(centerOfSource[0] + centerOfHovered[0]) / 2,
+                -(centerOfSource[1] + centerOfHovered[1]) / 2,
+              ),
+          );
+      svg.call(zoom);
+    }
+  }, [hoveredCard]);
 
   return (
     <>

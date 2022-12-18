@@ -25,8 +25,12 @@ export type CityCardProps = Pick<
 >;
 
 const CityCard: FC<CityCardProps> = (props) => {
-  const { setSourceCountryPrefectureName, setSourceCityName, setSelectedCard } =
-    useSearchModeState();
+  const {
+    setSourceCountryPrefectureName,
+    setSourceCityName,
+    setSelectedCard,
+    setHoveredCard,
+  } = useSearchModeState();
   const { classes } = useStyles();
   const { image, cityName, description } = props;
 
@@ -42,8 +46,24 @@ const CityCard: FC<CityCardProps> = (props) => {
     console.log({ cityName });
   };
 
+  const onCityCardHovered = (props: CityCardProps): void => {
+    const { cityName } = props;
+    if (typeof cityName !== 'undefined') {
+      setHoveredCard(cityName);
+    }
+  };
+
+  const onCityCardLeave = () => {
+    setHoveredCard(undefined);
+  };
+
   return (
-    <div className={classes.wrapper} onClick={() => onCityCardChange(props)}>
+    <div
+      className={classes.wrapper}
+      onClick={() => onCityCardChange(props)}
+      onMouseOver={() => onCityCardHovered(props)}
+      onMouseLeave={() => onCityCardLeave()}
+    >
       <Card className={classes.item} shadow="sm" radius="md" withBorder>
         <Card.Section>
           <Image

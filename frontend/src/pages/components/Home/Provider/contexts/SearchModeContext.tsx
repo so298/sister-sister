@@ -9,6 +9,8 @@ export type SearchModeState = {
   setTargetCityNames: (value: string[] | undefined) => void;
   selectedCard: string | undefined;
   setSelectedCard: (value: string | undefined) => void;
+  hoveredCard: string | undefined;
+  setHoveredCard: (value: string | undefined) => void;
 };
 
 export const searchModeStateContext = createContext<
@@ -36,6 +38,7 @@ export const SearchModeStateProvider: FC<SearchModeStateProviderProps> = (
   const [selectedCard, setSelectedCard] = useState<string | undefined>(
     undefined,
   );
+  const [hoveredCard, setHoveredCard] = useState<string | undefined>(undefined);
 
   return (
     <Provider
@@ -48,6 +51,8 @@ export const SearchModeStateProvider: FC<SearchModeStateProviderProps> = (
         setTargetCityNames,
         selectedCard,
         setSelectedCard,
+        hoveredCard,
+        setHoveredCard,
       }}
     >
       {children}
