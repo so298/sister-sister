@@ -1,14 +1,15 @@
 import { createStyles, Title } from '@mantine/core';
 import { FC, useMemo } from 'react';
 
-import cityData from '../../../../../data/cityData.json';
+import cityData from '../../../../../data/prodCityData.json';
 import undefinedData from '../../../../../data/undefinedData.json';
 import { CityDataType } from '../../../../static/types/cityDataType';
 import cityNameIndexHash from '../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../Provider/hooks/useSearchModeState';
 import CityCard, { CityCardProps } from '../../shared/CityCard';
 
-const data: CityDataType[] = cityData;
+const dataObject: any = cityData;
+const data: CityDataType[] = dataObject;
 
 const useStyles = createStyles((theme) => ({
   root: {

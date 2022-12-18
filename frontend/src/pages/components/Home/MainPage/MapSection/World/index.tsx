@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { LatLngTuple } from 'leaflet';
 import React, { useRef, FC, useEffect, useMemo, useState } from 'react';
 
-import cityData from '../../../../../../data/cityData.json';
+import cityData from '../../../../../../data/prodCityData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
 import { CityLinkType } from '../../../../../static/types/cityLinkType';
 import {
@@ -14,12 +14,15 @@ import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 // import { worldGeoJsonUrl } from '../../../../../static/urls';
 
-const data: CityDataType[] = cityData;
+const dataObject: any = cityData;
+const data: CityDataType[] = dataObject;
 
 const ZOOM_EXTENT = 20;
 
 const World: FC = () => {
   const {
+    sourceCountryPrefectureName,
+    setSourceCountryPrefectureName,
     sourceCityName,
     setSourceCityName,
     targetCityNames,
@@ -153,8 +156,8 @@ const World: FC = () => {
         statesRef.current.transition().style('fill', null);
         d3.select(event.target).transition().style('fill', 'red');
         // set sourceCity
-        if (d.properties.nam_ja !== undefined) {
-          setSourceCityName(d.properties.nam_ja);
+        if (d.properties.name !== undefined) {
+          setSourceCountryPrefectureName(d.properties.name);
         }
         svg
           .transition()

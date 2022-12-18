@@ -2,14 +2,15 @@ import { Button, createStyles, Title } from '@mantine/core';
 import { IconSearch } from '@tabler/icons';
 import { FC, useMemo, useEffect } from 'react';
 
-import cityData from '../../../../../../data/cityData.json';
+import cityData from '../../../../../../data/prodCityData.json';
 import undefinedData from '../../../../../../data/undefinedData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
 import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 import CityCard from '../../../shared/CityCard';
 
-const data: CityDataType[] = cityData;
+const dataObject: any = cityData;
+const data: CityDataType[] = dataObject;
 const undefinedItem: CityDataType = undefinedData;
 
 const useStyles = createStyles((theme) => ({
@@ -35,8 +36,7 @@ const useStyles = createStyles((theme) => ({
 
 const SearchControlPanel: FC = () => {
   const { classes } = useStyles();
-  const { setSearching, sourceCityName, setTargetCityNames } =
-    useSearchModeState();
+  const { sourceCityName, setTargetCityNames } = useSearchModeState();
 
   const sourceCityInfo: CityDataType = useMemo(() => {
     let item: CityDataType = undefinedItem;
@@ -63,7 +63,7 @@ const SearchControlPanel: FC = () => {
         setTargetCityNames([]);
       }
     }
-  }, [setSearching, sourceCityName, setTargetCityNames]);
+  }, [sourceCityName, setTargetCityNames]);
 
   return (
     <div className={classes.root}>
