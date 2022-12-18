@@ -102,9 +102,7 @@ const SearchControlPanel: FC = () => {
           <Title order={1}>{sourceCountryPrefectureName}</Title>
         </div>
       ) : (
-        <Title order={3} color="cyan">
-          Selectd Country
-        </Title>
+        <Title order={3}>Selectd Country</Title>
       )}
     </div>
   );
