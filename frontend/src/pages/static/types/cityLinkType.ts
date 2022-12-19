@@ -1,7 +1,7 @@
-export type LatLngTuple = [number, number];
+export type LngLatTuple = [number, number];
 
 export type CityLinkType = {
   type: string;
-  coordinates: LatLngTuple[];
+  coordinates: LngLatTuple[];
   geometries?: [];
 };
