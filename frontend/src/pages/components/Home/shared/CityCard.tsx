@@ -8,7 +8,7 @@ const useStyles = createStyles((theme) => ({
   item: {
     transition: 'box-shadow 150ms ease, transform 100ms ease',
     width: '100%',
-
+    maxWidth: '400px',
     '&:hover': {
       boxShadow: `${theme.shadows.md} !important`,
       transform: 'scale(1.05)',

@@ -23,7 +23,6 @@ const ZOOM_EXTENT = 20;
 
 const World: FC = () => {
   const {
-    sourceCountryPrefectureName,
     setSourceCountryPrefectureName,
     sourceCityName,
     setSourceCityName,
@@ -50,7 +49,6 @@ const World: FC = () => {
   const sisterPath = useRef<any>(null);
   const highlightedPath = useRef<any>(null);
   const statesRef = useRef<any>(null);
-  const cityPins = useRef<any>(null);
   /* eslint-enable @typescript-eslint/no-explicit-any */
 
   useEffect(() => {
