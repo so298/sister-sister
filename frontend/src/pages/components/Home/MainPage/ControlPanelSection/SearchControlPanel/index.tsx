@@ -9,6 +9,7 @@ import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 import CityCard from '../../../shared/CityCard';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const dataObject: any = cityData;
 const data: CityDataType[] = dataObject;
 const undefinedItem: CityDataType = undefinedData;

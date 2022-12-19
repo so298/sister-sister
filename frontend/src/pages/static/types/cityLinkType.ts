@@ -1,7 +1,7 @@
-import { LatLngTuple } from 'leaflet';
+export type LatLngTuple = [number, number];
 
 export type CityLinkType = {
   type: string;
-  coordinates: [LatLngTuple, LatLngTuple];
+  coordinates: LatLngTuple[];
   geometries?: [];
 };

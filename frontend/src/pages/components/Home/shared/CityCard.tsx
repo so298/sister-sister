@@ -45,8 +45,7 @@ const CityCard: FC<CityCardProps> = (props) => {
     setHoveredCard,
   } = useSearchModeState();
   const { classes } = useStyles();
-  const { image, cityName, description, area, population, wikiUrl, country } =
-    props;
+  const { image, cityName, description, area, population, country } = props;
 
   const onCityCardChange = (props: CityCardProps): void => {
     const { cityName, country, prefecture } = props;

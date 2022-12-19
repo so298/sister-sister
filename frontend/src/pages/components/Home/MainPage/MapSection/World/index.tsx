@@ -1,10 +1,12 @@
 import * as d3 from 'd3';
-import { LatLngTuple } from 'leaflet';
-import React, { useRef, FC, useEffect, useMemo, useState } from 'react';
+import { useRef, FC, useEffect, useMemo, useState } from 'react';
 
 import cityData from '../../../../../../data/prodCityData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
-import { CityLinkType } from '../../../../../static/types/cityLinkType';
+import {
+  CityLinkType,
+  LatLngTuple,
+} from '../../../../../static/types/cityLinkType';
 import {
   MouseEventType,
   ZoomEventType,
@@ -12,8 +14,8 @@ import {
 import { useWindowSize } from '../../../../../utils/GetWindowSize';
 import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
-// import { worldGeoJsonUrl } from '../../../../../static/urls';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const dataObject: any = cityData;
 const data: CityDataType[] = dataObject;
 
@@ -66,66 +68,74 @@ const World: FC = () => {
       .scale(initialScale);
   }, [width, height]);
 
-  const linkList: CityLinkType[] = useMemo(() => {
-    console.log('link update');
-    const link: CityLinkType[] = [];
-    if (sourceCityName !== undefined) {
-      const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
-      if (typeof sourceCityIndex !== 'undefined') {
-        const sourceCityInfo: CityDataType = data[sourceCityIndex];
-        const source: LatLngTuple = [
-          sourceCityInfo.position.longitude,
-          sourceCityInfo.position.latitude,
-        ];
-        targetCityNames?.forEach((d) => {
-          const targetCityIndex = cityNameIndexHash.get(d);
-          if (typeof targetCityIndex !== 'undefined') {
-            const targetCityInfo: CityDataType = data[targetCityIndex];
-            const target: LatLngTuple = [
-              targetCityInfo.position.longitude,
-              targetCityInfo.position.latitude,
-            ];
-            const topush: CityLinkType = {
-              type: 'LineString',
-              coordinates: [source, target],
-            };
-            link.push(topush);
-          }
-        });
-      } else return [];
-    }
-    return link;
-  }, [targetCityNames]);
+  const linkList: CityLinkType[] = useMemo(
+    () => {
+      console.log('link update');
+      const link: CityLinkType[] = [];
+      if (sourceCityName !== undefined) {
+        const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
+        if (typeof sourceCityIndex !== 'undefined') {
+          const sourceCityInfo: CityDataType = data[sourceCityIndex];
+          const source: LatLngTuple = [
+            sourceCityInfo.position.longitude,
+            sourceCityInfo.position.latitude,
+          ];
+          targetCityNames?.forEach((d) => {
+            const targetCityIndex = cityNameIndexHash.get(d);
+            if (typeof targetCityIndex !== 'undefined') {
+              const targetCityInfo: CityDataType = data[targetCityIndex];
+              const target: LatLngTuple = [
+                targetCityInfo.position.longitude,
+                targetCityInfo.position.latitude,
+              ];
+              const topush: CityLinkType = {
+                type: 'LineString',
+                coordinates: [source, target],
+              };
+              link.push(topush);
+            }
+          });
+        } else return [];
+      }
+      return link;
+    },
+    // eslint-disable-next-line
+    [targetCityNames],
+  );
 
-  const hilightedList: CityLinkType[] = useMemo(() => {
-    console.log('link update');
-    const link: CityLinkType[] = [];
-    if (sourceCityName !== undefined && hoveredCard !== undefined) {
-      const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
-      const hoveredCityIndex = cityNameIndexHash.get(hoveredCard);
-      if (
-        typeof sourceCityIndex !== 'undefined' &&
-        typeof hoveredCityIndex !== 'undefined'
-      ) {
-        const sourceCityInfo: CityDataType = data[sourceCityIndex];
-        const source: LatLngTuple = [
-          sourceCityInfo.position.longitude,
-          sourceCityInfo.position.latitude,
-        ];
-        const hoveredCityInfo: CityDataType = data[hoveredCityIndex];
-        const hovered: LatLngTuple = [
-          hoveredCityInfo.position.longitude,
-          hoveredCityInfo.position.latitude,
-        ];
-        const topush: CityLinkType = {
-          type: 'LineString',
-          coordinates: [source, hovered],
-        };
-        link.push(topush);
-      } else return [];
-    }
-    return link;
-  }, [hoveredCard]);
+  const hilightedList: CityLinkType[] = useMemo(
+    () => {
+      console.log('link update');
+      const link: CityLinkType[] = [];
+      if (sourceCityName !== undefined && hoveredCard !== undefined) {
+        const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
+        const hoveredCityIndex = cityNameIndexHash.get(hoveredCard);
+        if (
+          typeof sourceCityIndex !== 'undefined' &&
+          typeof hoveredCityIndex !== 'undefined'
+        ) {
+          const sourceCityInfo: CityDataType = data[sourceCityIndex];
+          const source: LatLngTuple = [
+            sourceCityInfo.position.longitude,
+            sourceCityInfo.position.latitude,
+          ];
+          const hoveredCityInfo: CityDataType = data[hoveredCityIndex];
+          const hovered: LatLngTuple = [
+            hoveredCityInfo.position.longitude,
+            hoveredCityInfo.position.latitude,
+          ];
+          const topush: CityLinkType = {
+            type: 'LineString',
+            coordinates: [source, hovered],
+          };
+          link.push(topush);
+        } else return [];
+      }
+      return link;
+    },
+    // eslint-disable-next-line
+    [hoveredCard],
+  );
 
   // set projection
   useEffect(() => {
@@ -140,6 +150,7 @@ const World: FC = () => {
   useEffect(() => {
     if (!dataFetchDone.current) {
       console.log('data fetch');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       d3.json('./worldAndJapan.json').then((data: any) => {
         setGeoData(() => {
           console.log(data);
@@ -186,6 +197,7 @@ const World: FC = () => {
         g.exit().remove();
       };
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const clicked = (event: MouseEventType, d: any) => {
         const [[x0, y0], [x1, y1]] = path.bounds(d);
         event.stopPropagation();
@@ -269,220 +281,238 @@ const World: FC = () => {
   ]);
 
   // draw sister sity path
-  useEffect(() => {
-    if (geoPath && g) {
-      if (!sisterPath.current) {
-        sisterPath.current = g.selectAll('sisterPath');
-      }
+  useEffect(
+    () => {
+      if (geoPath && g) {
+        if (!sisterPath.current) {
+          sisterPath.current = g.selectAll('sisterPath');
+        }
 
-      console.log('remove');
-      sisterPath.current = sisterPath.current
-        .data(linkList)
-        .join('path')
-        .attr('opacity', 1)
-        .attr('d', (d: any) => geoPath(d))
-        .style('fill', 'none')
-        .style('stroke', '#69b3a2')
-        .style('stroke-width', 2);
-    }
-  }, [geoPath, linkList]);
+        console.log('remove');
+        sisterPath.current = sisterPath.current
+          .data(linkList)
+          .join('path')
+          .attr('opacity', 1)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .attr('d', (d: any) => geoPath(d))
+          .style('fill', 'none')
+          .style('stroke', '#69b3a2')
+          .style('stroke-width', 2);
+      }
+    },
+    // eslint-disable-next-line
+    [geoPath, linkList],
+  );
 
   const point1 = projection([137, 45]);
 
   // city pin
-  useEffect(() => {
-    if (geoPath && g) {
-      if (!cityPins.current) {
-        cityPins.current = g.selectAll('cityPins');
+  useEffect(
+    () => {
+      if (geoPath && g) {
+        if (!cityPins.current) {
+          cityPins.current = g.selectAll('cityPins');
+        }
+        if (point1) {
+          console.log({ sourceCountryPrefectureName });
+          cityPins.current = cityPins.current
+            .append('circle')
+            .attr('fill', '#0088DD')
+            .attr('stroke', 'white')
+            .attr('r', 100)
+            .attr('cx', point1[0])
+            .attr('cy', point1[1]);
+        }
       }
-      if (point1) {
-        console.log({ sourceCountryPrefectureName });
-        cityPins.current = cityPins.current
-          .append('circle')
-          .attr('fill', '#0088DD')
-          .attr('stroke', 'white')
-          .attr('r', 100)
-          .attr('cx', point1[0])
-          .attr('cy', point1[1]);
+    },
+    // eslint-disable-next-line
+    [sourceCountryPrefectureName],
+  );
+
+  useEffect(
+    () => {
+      if (
+        svgElemRef.current !== null &&
+        svgElemRef.current !== undefined &&
+        gElemRef.current !== null &&
+        gElemRef.current !== undefined &&
+        selectedCard !== undefined
+      ) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const zoom: any = d3
+          .zoom()
+          .scaleExtent([1, ZOOM_EXTENT])
+          .on('zoom', (event: ZoomEventType) => {
+            const { transform } = event;
+            g.attr('transform', transform);
+            g.attr('stroke-width', 1 / transform.k);
+          });
+        const centerOfClickedIndex = cityNameIndexHash.get(selectedCard);
+        const centerOfClicked = centerOfClickedIndex
+          ? projection([
+              data[centerOfClickedIndex].position.longitude,
+              data[centerOfClickedIndex].position.latitude,
+            ])
+          : undefined;
+
+        //console.log(centerOfClicked);
+        statesRef.current.transition().style('fill', null);
+        centerOfClicked !== undefined &&
+          centerOfClicked !== null &&
+          svg
+            .transition()
+            .duration(750)
+            .call(
+              zoom.transform,
+              d3.zoomIdentity
+                .translate(width / 2, height / 2)
+                .scale(1)
+                .translate(-centerOfClicked[0], -centerOfClicked[1]),
+            );
+        svg.call(zoom);
       }
-    }
-  }, [sourceCountryPrefectureName]);
+    },
+    // eslint-disable-next-line
+    [selectedCard],
+  );
 
-  useEffect(() => {
-    if (
-      svgElemRef.current !== null &&
-      svgElemRef.current !== undefined &&
-      gElemRef.current !== null &&
-      gElemRef.current !== undefined &&
-      selectedCard !== undefined
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const zoom: any = d3
-        .zoom()
-        .scaleExtent([1, ZOOM_EXTENT])
-        .on('zoom', (event: ZoomEventType) => {
-          const { transform } = event;
-          g.attr('transform', transform);
-          g.attr('stroke-width', 1 / transform.k);
-        });
-      const centerOfClickedIndex = cityNameIndexHash.get(selectedCard);
-      const centerOfClicked = centerOfClickedIndex
-        ? projection([
-            data[centerOfClickedIndex].position.longitude,
-            data[centerOfClickedIndex].position.latitude,
-          ])
-        : undefined;
+  useEffect(
+    () => {
+      console.log(hoveredCard);
+      if (
+        svgElemRef.current !== null &&
+        svgElemRef.current !== undefined &&
+        gElemRef.current !== null &&
+        gElemRef.current !== undefined &&
+        hoveredCard !== null &&
+        hoveredCard !== undefined &&
+        sourceCityName !== null &&
+        sourceCityName !== undefined
+      ) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const zoom: any = d3
+          .zoom()
+          .scaleExtent([1, ZOOM_EXTENT])
+          .on('zoom', (event: ZoomEventType) => {
+            const { transform } = event;
+            g.attr('transform', transform);
+            g.attr('stroke-width', 1 / transform.k);
+          });
+        const centerOfHoveredIndex = cityNameIndexHash.get(hoveredCard);
+        const centerOfHovered = centerOfHoveredIndex
+          ? projection([
+              data[centerOfHoveredIndex].position.longitude,
+              data[centerOfHoveredIndex].position.latitude,
+            ])
+          : undefined;
 
-      //console.log(centerOfClicked);
-      statesRef.current.transition().style('fill', null);
-      centerOfClicked !== undefined &&
-        centerOfClicked !== null &&
-        svg
-          .transition()
-          .duration(750)
-          .call(
-            zoom.transform,
-            d3.zoomIdentity
-              .translate(width / 2, height / 2)
-              .scale(1)
-              .translate(-centerOfClicked[0], -centerOfClicked[1]),
-          );
-      svg.call(zoom);
-    }
-  }, [selectedCard]);
+        const centerOfSourceIndex = cityNameIndexHash.get(sourceCityName);
+        const centerOfSource = centerOfSourceIndex
+          ? projection([
+              data[centerOfSourceIndex].position.longitude,
+              data[centerOfSourceIndex].position.latitude,
+            ])
+          : undefined;
+        console.log(sourceCityName);
 
-  useEffect(() => {
-    console.log(hoveredCard);
-    if (
-      svgElemRef.current !== null &&
-      svgElemRef.current !== undefined &&
-      gElemRef.current !== null &&
-      gElemRef.current !== undefined &&
-      hoveredCard !== null &&
-      hoveredCard !== undefined &&
-      sourceCityName !== null &&
-      sourceCityName !== undefined
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const zoom: any = d3
-        .zoom()
-        .scaleExtent([1, ZOOM_EXTENT])
-        .on('zoom', (event: ZoomEventType) => {
-          const { transform } = event;
-          g.attr('transform', transform);
-          g.attr('stroke-width', 1 / transform.k);
-        });
-      const centerOfHoveredIndex = cityNameIndexHash.get(hoveredCard);
-      const centerOfHovered = centerOfHoveredIndex
-        ? projection([
-            data[centerOfHoveredIndex].position.longitude,
-            data[centerOfHoveredIndex].position.latitude,
-          ])
-        : undefined;
-
-      const centerOfSourceIndex = cityNameIndexHash.get(sourceCityName);
-      const centerOfSource = centerOfSourceIndex
-        ? projection([
-            data[centerOfSourceIndex].position.longitude,
-            data[centerOfSourceIndex].position.latitude,
-          ])
-        : undefined;
-      console.log(sourceCityName);
-
-      centerOfHovered !== undefined &&
-        centerOfHovered !== null &&
-        centerOfSource !== undefined &&
-        centerOfSource !== null &&
-        svg
-          .transition()
-          .duration(750)
-          .call(
-            zoom.transform,
-            d3.zoomIdentity
-              .translate(width / 2, height / 2)
-              .scale(1)
-              .scale(
-                Math.min(
-                  ZOOM_EXTENT,
+        centerOfHovered !== undefined &&
+          centerOfHovered !== null &&
+          centerOfSource !== undefined &&
+          centerOfSource !== null &&
+          svg
+            .transition()
+            .duration(750)
+            .call(
+              zoom.transform,
+              d3.zoomIdentity
+                .translate(width / 2, height / 2)
+                .scale(1)
+                .scale(
                   Math.min(
-                    (0.4 / Math.abs(centerOfHovered[0] - centerOfSource[0])) *
-                      width,
-                    (0.4 / Math.abs(centerOfHovered[1] - centerOfSource[1])) *
-                      height,
+                    ZOOM_EXTENT,
+                    Math.min(
+                      (0.4 / Math.abs(centerOfHovered[0] - centerOfSource[0])) *
+                        width,
+                      (0.4 / Math.abs(centerOfHovered[1] - centerOfSource[1])) *
+                        height,
+                    ),
                   ),
+                )
+                .translate(
+                  -(centerOfSource[0] + centerOfHovered[0]) / 2,
+                  -(centerOfSource[1] + centerOfHovered[1]) / 2,
                 ),
-              )
-              .translate(
-                -(centerOfSource[0] + centerOfHovered[0]) / 2,
-                -(centerOfSource[1] + centerOfHovered[1]) / 2,
-              ),
-          );
-      svg.call(zoom);
-      if (geoPath && g) {
-        if (!highlightedPath.current) {
-          highlightedPath.current = g.selectAll('highlightedPath');
-        }
+            );
+        svg.call(zoom);
+        if (geoPath && g) {
+          if (!highlightedPath.current) {
+            highlightedPath.current = g.selectAll('highlightedPath');
+          }
 
-        highlightedPath.current = highlightedPath.current
-          .data(hilightedList)
-          .join('path')
-          .attr('opacity', 1)
-          .attr('d', (d: any) => geoPath(d))
-          .style('fill', 'none')
-          .style('stroke', 'red')
-          .style('stroke-width', 2.5);
-      }
-    } else if (
-      svgElemRef.current !== null &&
-      svgElemRef.current !== undefined &&
-      gElemRef.current !== null &&
-      gElemRef.current !== undefined &&
-      sourceCityName !== null &&
-      sourceCityName !== undefined
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const zoom: any = d3
-        .zoom()
-        .scaleExtent([1, ZOOM_EXTENT])
-        .on('zoom', (event: ZoomEventType) => {
-          const { transform } = event;
-          g.attr('transform', transform);
-          g.attr('stroke-width', 1 / transform.k);
-        });
-
-      const centerOfSourceIndex = cityNameIndexHash.get(sourceCityName);
-      const centerOfSource = centerOfSourceIndex
-        ? projection([
-            data[centerOfSourceIndex].position.longitude,
-            data[centerOfSourceIndex].position.latitude,
-          ])
-        : undefined;
-      //console.log(centerOfClicked);
-      statesRef.current.transition().style('fill', null);
-      centerOfSource !== undefined &&
-        centerOfSource !== null &&
-        svg
-          .transition()
-          .duration(750)
-          .call(
-            zoom.transform,
-            d3.zoomIdentity
-              .translate(width / 2, height / 2)
-              .scale(1)
-              .translate(-centerOfSource[0], -centerOfSource[1]),
-          );
-      svg.call(zoom);
-      if (geoPath && g) {
-        if (!highlightedPath.current) {
-          highlightedPath.current = g.selectAll('highlightedPath');
+          highlightedPath.current = highlightedPath.current
+            .data(hilightedList)
+            .join('path')
+            .attr('opacity', 1)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .attr('d', (d: any) => geoPath(d))
+            .style('fill', 'none')
+            .style('stroke', 'red')
+            .style('stroke-width', 2.5);
         }
-        highlightedPath.current = highlightedPath.current
-          .data(hilightedList)
-          .join('path')
-          .remove();
+      } else if (
+        svgElemRef.current !== null &&
+        svgElemRef.current !== undefined &&
+        gElemRef.current !== null &&
+        gElemRef.current !== undefined &&
+        sourceCityName !== null &&
+        sourceCityName !== undefined
+      ) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const zoom: any = d3
+          .zoom()
+          .scaleExtent([1, ZOOM_EXTENT])
+          .on('zoom', (event: ZoomEventType) => {
+            const { transform } = event;
+            g.attr('transform', transform);
+            g.attr('stroke-width', 1 / transform.k);
+          });
+
+        const centerOfSourceIndex = cityNameIndexHash.get(sourceCityName);
+        const centerOfSource = centerOfSourceIndex
+          ? projection([
+              data[centerOfSourceIndex].position.longitude,
+              data[centerOfSourceIndex].position.latitude,
+            ])
+          : undefined;
+        //console.log(centerOfClicked);
+        statesRef.current.transition().style('fill', null);
+        centerOfSource !== undefined &&
+          centerOfSource !== null &&
+          svg
+            .transition()
+            .duration(750)
+            .call(
+              zoom.transform,
+              d3.zoomIdentity
+                .translate(width / 2, height / 2)
+                .scale(1)
+                .translate(-centerOfSource[0], -centerOfSource[1]),
+            );
+        svg.call(zoom);
+        if (geoPath && g) {
+          if (!highlightedPath.current) {
+            highlightedPath.current = g.selectAll('highlightedPath');
+          }
+          highlightedPath.current = highlightedPath.current
+            .data(hilightedList)
+            .join('path')
+            .remove();
+        }
       }
-    }
-  }, [hoveredCard]);
+    },
+    // eslint-disable-next-line
+    [hoveredCard],
+  );
 
   return (
     <>

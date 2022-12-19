@@ -9,6 +9,7 @@ import countryPrefectureNameIndexHash from '../../../../utils/countryPrefectureN
 import { useSearchModeState } from '../../Provider/hooks/useSearchModeState';
 import CityCard, { CityCardProps } from '../../shared/CityCard';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const dataObject: any = cityData;
 const data: CityDataType[] = dataObject;
 

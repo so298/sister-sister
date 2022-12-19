@@ -1,6 +1,7 @@
 import cityData from '../../data/prodCityData.json';
 import { CityDataType } from '../static/types/cityDataType';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const dataObject: any = cityData;
 const data: CityDataType[] = dataObject;
 const countryPrefectureNameIndexHash = new Map<string, number[]>();
