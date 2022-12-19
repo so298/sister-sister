@@ -46,6 +46,7 @@ const World: FC = () => {
   const [svg, setSvg] = useState<any>(null);
   const [g, setG] = useState<any>(null);
   const sisterPath = useRef<any>(null);
+  const highlightedPath = useRef<any>(null);
   const statesRef = useRef<any>(null);
   const cityPins = useRef<any>(null);
   /* eslint-enable @typescript-eslint/no-explicit-any */
@@ -95,6 +96,36 @@ const World: FC = () => {
     }
     return link;
   }, [targetCityNames]);
+
+  const hilightedList: CityLinkType[] = useMemo(() => {
+    console.log('link update');
+    const link: CityLinkType[] = [];
+    if (sourceCityName !== undefined && hoveredCard !== undefined) {
+      const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
+      const hoveredCityIndex = cityNameIndexHash.get(hoveredCard);
+      if (
+        typeof sourceCityIndex !== 'undefined' &&
+        typeof hoveredCityIndex !== 'undefined'
+      ) {
+        const sourceCityInfo: CityDataType = data[sourceCityIndex];
+        const source: LatLngTuple = [
+          sourceCityInfo.position.longitude,
+          sourceCityInfo.position.latitude,
+        ];
+        const hoveredCityInfo: CityDataType = data[hoveredCityIndex];
+        const hovered: LatLngTuple = [
+          hoveredCityInfo.position.longitude,
+          hoveredCityInfo.position.latitude,
+        ];
+        const topush: CityLinkType = {
+          type: 'LineString',
+          coordinates: [source, hovered],
+        };
+        link.push(topush);
+      } else return [];
+    }
+    return link;
+  }, [hoveredCard]);
 
   // set projection
   useEffect(() => {
@@ -387,6 +418,20 @@ const World: FC = () => {
               ),
           );
       svg.call(zoom);
+      if (geoPath && g) {
+        if (!highlightedPath.current) {
+          highlightedPath.current = g.selectAll('highlightedPath');
+        }
+
+        highlightedPath.current = highlightedPath.current
+          .data(hilightedList)
+          .join('path')
+          .attr('opacity', 1)
+          .attr('d', (d: any) => geoPath(d))
+          .style('fill', 'none')
+          .style('stroke', 'red')
+          .style('stroke-width', 2.5);
+      }
     } else if (
       svgElemRef.current !== null &&
       svgElemRef.current !== undefined &&
@@ -427,6 +472,15 @@ const World: FC = () => {
               .translate(-centerOfSource[0], -centerOfSource[1]),
           );
       svg.call(zoom);
+      if (geoPath && g) {
+        if (!highlightedPath.current) {
+          highlightedPath.current = g.selectAll('highlightedPath');
+        }
+        highlightedPath.current = highlightedPath.current
+          .data(hilightedList)
+          .join('path')
+          .remove();
+      }
     }
   }, [hoveredCard]);
 
