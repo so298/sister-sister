@@ -430,7 +430,7 @@ const World: FC = () => {
           .attr('d', (d: any) => geoPath(d))
           .style('fill', 'none')
           .style('stroke', 'red')
-          .style('stroke-width', 2);
+          .style('stroke-width', 2.5);
       }
     } else if (
       svgElemRef.current !== null &&
