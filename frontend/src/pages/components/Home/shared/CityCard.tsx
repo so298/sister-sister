@@ -58,6 +58,7 @@ const CityCard: FC<CityCardProps> = (props) => {
     setSourceCityName(cityName);
     setSelectedCard(cityName);
     console.log({ cityName });
+    setHoveredCard(undefined);
   };
 
   const onCityCardHovered = (props: CityCardProps): void => {

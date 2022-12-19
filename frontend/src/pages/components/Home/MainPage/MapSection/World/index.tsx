@@ -282,31 +282,10 @@ const World: FC = () => {
         .attr('opacity', 1)
         .attr('d', (d: any) => geoPath(d))
         .style('fill', 'none')
-        .style('stroke', '#69b3a2')
+        .style('stroke', '#4ec99c')
         .style('stroke-width', 2);
     }
   }, [geoPath, linkList]);
-
-  const point1 = projection([137, 45]);
-
-  // city pin
-  useEffect(() => {
-    if (geoPath && g) {
-      if (!cityPins.current) {
-        cityPins.current = g.selectAll('cityPins');
-      }
-      if (point1) {
-        console.log({ sourceCountryPrefectureName });
-        cityPins.current = cityPins.current
-          .append('circle')
-          .attr('fill', '#0088DD')
-          .attr('stroke', 'white')
-          .attr('r', 100)
-          .attr('cx', point1[0])
-          .attr('cy', point1[1]);
-      }
-    }
-  }, [sourceCountryPrefectureName]);
 
   useEffect(() => {
     if (
@@ -472,6 +451,16 @@ const World: FC = () => {
               .translate(-centerOfSource[0], -centerOfSource[1]),
           );
       svg.call(zoom);
+      if (geoPath && g) {
+        if (!highlightedPath.current) {
+          highlightedPath.current = g.selectAll('highlightedPath');
+        }
+        highlightedPath.current = highlightedPath.current
+          .data(hilightedList)
+          .join('path')
+          .remove();
+      }
+    } else {
       if (geoPath && g) {
         if (!highlightedPath.current) {
           highlightedPath.current = g.selectAll('highlightedPath');
