@@ -39,6 +39,7 @@ export type CityCardProps = Pick<
 const CityCard: FC<CityCardProps> = (props) => {
   const {
     setSourceCountryPrefectureName,
+    sourceCityName,
     setSourceCityName,
     setSelectedCard,
     setHoveredCard,
@@ -61,7 +62,10 @@ const CityCard: FC<CityCardProps> = (props) => {
 
   const onCityCardHovered = (props: CityCardProps): void => {
     const { cityName } = props;
-    if (typeof cityName !== 'undefined') {
+    if (
+      typeof cityName !== 'undefined' &&
+      typeof sourceCityName !== 'undefined'
+    ) {
       setHoveredCard(cityName);
     }
   };
