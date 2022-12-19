@@ -29,7 +29,8 @@ city_dict_cp = deepcopy(city_dict)
 for city in city_dict.values():
     for sister in city['sisterUrls']:
         if sister in city_dict.keys():
-            city_dict_cp[sister]['sisterUrls'].append(sister)
+            print(sister)
+            city_dict_cp[sister]['sisterUrls'].append(city['info']['wikiUrlEn'])
 
 city_dict = city_dict_cp
 
@@ -49,4 +50,4 @@ for city in city_dict.values():
     output.append(city_info)
 
 with open('data/city_data_all.json', 'w') as f:
-    json.dump(output, f)
+    json.dump(output, f, ensure_ascii=False)
