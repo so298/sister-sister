@@ -12,8 +12,6 @@ export const createCityPath = (
   sourcePoint: LngLatTuple,
   targetPoint: LngLatTuple,
 ): LngLatTuple[] => {
-  console.log('create city link');
-  console.log(sourcePoint);
   const sourceLongitude = sourcePoint[0];
   const targetLongitude = targetPoint[0];
   if (sourceLongitude * targetLongitude >= 0) {

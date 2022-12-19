@@ -69,7 +69,6 @@ const World: FC = () => {
 
   const linkList: CityLinkType[] = useMemo(
     () => {
-      console.log('link update');
       const link: CityLinkType[] = [];
       if (sourceCityName !== undefined) {
         const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
@@ -104,7 +103,6 @@ const World: FC = () => {
 
   const hilightedList: CityLinkType[] = useMemo(
     () => {
-      console.log('link update');
       const link: CityLinkType[] = [];
       if (sourceCityName !== undefined && hoveredCard !== undefined) {
         const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
@@ -148,11 +146,9 @@ const World: FC = () => {
   // load geo data
   useEffect(() => {
     if (!dataFetchDone.current) {
-      console.log('data fetch');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       d3.json('./worldAndJapan.json').then((data: any) => {
         setGeoData(() => {
-          console.log(data);
           dataFetchDone.current = true;
           return data;
         });
@@ -287,7 +283,6 @@ const World: FC = () => {
           sisterPath.current = g.selectAll('sisterPath');
         }
 
-        console.log('remove');
         sisterPath.current = sisterPath.current
           .data(linkList)
           .join('path')
@@ -329,7 +324,6 @@ const World: FC = () => {
             ])
           : undefined;
 
-        //console.log(centerOfClicked);
         statesRef.current.transition().style('fill', null);
         centerOfClicked !== undefined &&
           centerOfClicked !== null &&
@@ -352,7 +346,6 @@ const World: FC = () => {
 
   useEffect(
     () => {
-      console.log(hoveredCard);
       if (
         svgElemRef.current !== null &&
         svgElemRef.current !== undefined &&
@@ -387,7 +380,6 @@ const World: FC = () => {
               data[centerOfSourceIndex].position.latitude,
             ])
           : undefined;
-        console.log(sourceCityName);
 
         centerOfHovered !== undefined &&
           centerOfHovered !== null &&
@@ -458,7 +450,6 @@ const World: FC = () => {
               data[centerOfSourceIndex].position.latitude,
             ])
           : undefined;
-        //console.log(centerOfClicked);
         statesRef.current.transition().style('fill', null);
         centerOfSource !== undefined &&
           centerOfSource !== null &&
