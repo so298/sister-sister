@@ -304,31 +304,6 @@ const World: FC = () => {
     [geoPath, linkList],
   );
 
-  const point1 = projection([137, 45]);
-
-  // city pin
-  useEffect(
-    () => {
-      if (geoPath && g) {
-        if (!cityPins.current) {
-          cityPins.current = g.selectAll('cityPins');
-        }
-        if (point1) {
-          console.log({ sourceCountryPrefectureName });
-          cityPins.current = cityPins.current
-            .append('circle')
-            .attr('fill', '#0088DD')
-            .attr('stroke', 'white')
-            .attr('r', 100)
-            .attr('cx', point1[0])
-            .attr('cy', point1[1]);
-        }
-      }
-    },
-    // eslint-disable-next-line
-    [sourceCountryPrefectureName],
-  );
-
   useEffect(
     () => {
       if (
