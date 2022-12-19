@@ -5,7 +5,7 @@ import cityData from '../../../../../../data/prodCityData.json';
 import { CityDataType } from '../../../../../static/types/cityDataType';
 import {
   CityLinkType,
-  LatLngTuple,
+  LngLatTuple,
 } from '../../../../../static/types/cityLinkType';
 import {
   MouseEventType,
@@ -13,6 +13,7 @@ import {
 } from '../../../../../static/types/eventTypes';
 import { useWindowSize } from '../../../../../utils/GetWindowSize';
 import cityNameIndexHash from '../../../../../utils/cityNameIndexHash';
+import { createCityPath } from '../../../../../utils/createCityPath';
 import { useSearchModeState } from '../../../Provider/hooks/useSearchModeState';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,7 +58,7 @@ const World: FC = () => {
   }, []);
 
   const projection = useMemo(() => {
-    const initialCenter: LatLngTuple = [0, 0];
+    const initialCenter: LngLatTuple = [0, 0];
     const initialScale = 300;
     return d3
       .geoMercator()
@@ -74,7 +75,7 @@ const World: FC = () => {
         const sourceCityIndex = cityNameIndexHash.get(sourceCityName);
         if (typeof sourceCityIndex !== 'undefined') {
           const sourceCityInfo: CityDataType = data[sourceCityIndex];
-          const source: LatLngTuple = [
+          const source: LngLatTuple = [
             sourceCityInfo.position.longitude,
             sourceCityInfo.position.latitude,
           ];
@@ -82,13 +83,13 @@ const World: FC = () => {
             const targetCityIndex = cityNameIndexHash.get(d);
             if (typeof targetCityIndex !== 'undefined') {
               const targetCityInfo: CityDataType = data[targetCityIndex];
-              const target: LatLngTuple = [
+              const target: LngLatTuple = [
                 targetCityInfo.position.longitude,
                 targetCityInfo.position.latitude,
               ];
               const topush: CityLinkType = {
                 type: 'LineString',
-                coordinates: [source, target],
+                coordinates: createCityPath(source, target),
               };
               link.push(topush);
             }
@@ -113,18 +114,18 @@ const World: FC = () => {
           typeof hoveredCityIndex !== 'undefined'
         ) {
           const sourceCityInfo: CityDataType = data[sourceCityIndex];
-          const source: LatLngTuple = [
+          const source: LngLatTuple = [
             sourceCityInfo.position.longitude,
             sourceCityInfo.position.latitude,
           ];
           const hoveredCityInfo: CityDataType = data[hoveredCityIndex];
-          const hovered: LatLngTuple = [
+          const hovered: LngLatTuple = [
             hoveredCityInfo.position.longitude,
             hoveredCityInfo.position.latitude,
           ];
           const topush: CityLinkType = {
             type: 'LineString',
-            coordinates: [source, hovered],
+            coordinates: createCityPath(source, hovered),
           };
           link.push(topush);
         } else return [];
