@@ -59,6 +59,7 @@ const ControlPanelSection: FC = () => {
             },
           },
         })}
+        disabled={true}
       />
       <Divider />
       {mode == 'search' && <SearchControlPanel />}
